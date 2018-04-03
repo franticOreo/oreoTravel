@@ -1,0 +1,100 @@
+.container {
+  display: grid;
+  font-family: Helvetica;
+  height: 100%;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 40px auto 40px;
+  grid-auto-flow: dense;
+  grid-gap: 5px;
+  grid-template-areas:
+      "h h h h h h h h h a a a"
+      "d d d c c c c c c a a a"
+      "f f f f f f f f f a a a"
+}
+
+.container > div {
+    /* display: flex; */
+    font-size: 1em;
+    color: #ffeead;
+}
+
+html, body {
+  box-sizing: border-box;
+  background-color: #ffeead;
+  height: 100%;
+  padding: 10px;
+  margin: 0px;
+}
+
+.header {
+  display: flex;
+  justify-content: left;
+  grid-area: h;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+.add_task {
+  /* display: flex; */
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  grid-area: a;
+}
+
+.destination_selector {
+  grid-area: d;
+  align-items: center;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+li:hover {
+  background-color: #5f977b;
+  color: white;
+}
+
+.current_tasks {
+  /* display: grid; */
+  text-align: center;
+  padding: 1px;
+  margin: 0;
+  grid-area: c;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.footer {
+  grid-area: f;
+}
+
+.container > div:nth-child(1n) {
+  background-color: #96ceb4;
+}
+
+.container > div:nth-child(3n) {
+  background-color: #88d8b0;
+}
+
+.container > div:nth-child(2n) {
+      background-color: #ff6f69;
+}
+
+.container > div:nth-child(4n) {
+      background-color: #ffcc5c;
+}

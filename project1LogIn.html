@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Logged In- Oreotravel</title>
+  <link rel="stylesheet" href="project1LogIn.css">
+  <script>
+  var source;
+  function isbefore(a, b) {
+    if (a.parentNode == b.parentNode) {
+      for (var cur = a; cur; cur = cur.previousSibling) {
+        if (cur === b) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function dragenter(e) {
+    if (isbefore(source, e.target)) {
+      e.target.parentNode.insertBefore(source, e.target);
+      console.log(e.target.parentNode);
+
+    }
+    else {
+      e.target.parentNode.insertBefore(source, e.target.nextSibling);
+    }
+  }
+
+  function dragstart(e) {
+    source = e.target;
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function addTaskChild() {
+
+    var x = document.getElementById("addTaskForm");
+    var taskNameVal = x.elements[0].value;
+    var taskDescVal = x.elements[1].value;
+    var taskPrioVal = x.elements["priority"].value;
+    // document.getElementById("test").innerHTML = taskDescVal;
+
+    var t = document.createElement("table");
+    t.setAttribute("id","newTable");
+
+    var listNode = document.createElement("li");
+    listNode.appendChild(t);
+    document.getElementById("taskList").appendChild(listNode);
+
+
+    listNode.setAttribute("draggable","true");
+    listNode.setAttribute("ondragenter","dragenter(event)");
+    listNode.setAttribute("ondragstart","dragstart(event)");
+  // var textnode = document.createTextNode(taskNameVal);
+
+    var tRow = document.createElement("tr");
+    tRow.setAttribute("id","tr1");
+    document.getElementById("newTable").appendChild(tRow);
+
+    var tData = document.createElement("td");
+    var text = document.createTextNode("Task Name:");
+    tData.appendChild(text);
+    tData.setAttribute("id","td1");
+    document.getElementById("tr1").appendChild(tData);
+
+    var tData2 = document.createElement("td");
+    var text = document.createTextNode(taskNameVal);
+    tData2.appendChild(text);
+    tData2.setAttribute("id","td2");
+    document.getElementById("tr1").appendChild(tData2);
+
+    var tRow2 = document.createElement("tr");
+    tRow2.setAttribute("id","tr2");
+    document.getElementById("newTable").appendChild(tRow2);
+
+    var tData3 = document.createElement("td");
+    var text = document.createTextNode("Task Description:");
+    tData3.appendChild(text);
+    tData3.setAttribute("id","td3");
+    document.getElementById("tr2").appendChild(tData3);
+
+    var tData4 = document.createElement("td");
+    var text = document.createTextNode(taskDescVal);
+    tData4.appendChild(text);
+    tData4.setAttribute("id","td4");
+    document.getElementById("tr2").appendChild(tData4);
+
+    var tRow3 = document.createElement("tr");
+    tRow3.setAttribute("id","tr3");
+    document.getElementById("newTable").appendChild(tRow3);
+
+    var tData5 = document.createElement("td");
+    var text = document.createTextNode("Added By:");
+    tData5.appendChild(text);
+    tData5.setAttribute("id","td5");
+    document.getElementById("tr3").appendChild(tData5);
+
+    var tData6 = document.createElement("td");
+    var text = document.createTextNode("UserName");
+    tData6.appendChild(text);
+    tData6.setAttribute("id","td6");
+    document.getElementById("tr3").appendChild(tData6);
+
+
+  }
+
+  window.onload = function() {
+    dispDate();
+    function dispDate() {
+      var d = new Date();
+      var lm = document.lastModified;
+      document.getElementById("footerContent2").innerHTML = "Last Modified: "+lm;
+      document.getElementById("footerContent").innerHTML = "Date: "+d.toDateString();
+    }
+  }
+
+
+</script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img id=headerLogo src="oreo.png" alt="image not available" height="42" width="42">
+      <h2>Oreotravel Home</h2></div>
+    <div class="destination_selector">
+      <h3> Destination</h3>
+      <ul id="test"><br />
+        <li>Destination 1</li>
+        <li>Destination 2</li>
+        <li>Destination 3</li>
+      </ul>
+    </div>
+    <div class="add_task">
+      <div>
+        UserName<br>
+        Team Leader
+      </div>
+      <br>
+      <div>Add task</div>
+      <div>
+        <form id=addTaskForm >
+          Task Name: <input type="text" name="taskName" value="xxx"><br>
+          Description:<input type="text" name="taskDesc" value="yyyy"><br>
+          Suggested Priority: <br>
+            <input type="radio" name="priority" value="High">High<br>
+            <input type="radio" name="priority" value="Medium">Medium<br>
+            <input type="radio" name="priority" value="Low">Low
+          <br>
+        </form>
+          <button onclick="addTaskChild()">Add</button>
+
+      </div>
+    </div>
+    <div class="current_tasks" ondrop="drop(event)" >
+        <h3>Current Tasks</h3>
+        <ul id=taskList><br />
+          <li draggable="true" ondragenter="dragenter(event)" ondragstart="dragstart(event)">
+            <table>
+              <tr>
+                <td> Task Name</td>
+                <td> Task 1</td>
+              </tr>
+              <tr>
+                <td>Task Description</td>
+                <td>Description of Task</td>
+              </tr>
+              <tr>
+                <td>Added by:</td>
+                <td>UserName</td>
+              </tr>
+            </table></li>
+          <li draggable="true" ondragenter="dragenter(event)" ondragstart="dragstart(event)">Task 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id urna quis neque rhoncus dignissim eu ut nibh. Vivamus mattis lobortis urna, nec pretium magna molestie non. Sed ac sodales ipsum. Suspendisse potenti. Nulla fermentum dolor et pulvinar interdum. Aliquam sagittis ornare lectus eget maximus. Ut consequat sollicitudin metus ut malesuada. Praesent tempor libero eu auctor dapibus. Vestibulum viverra augue quis vestibulum blandit. Vestibulum vel dapibus metus.</li>
+          <li draggable="true" ondragenter="dragenter(event)" ondragstart="dragstart(event)">Task 3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id urna quis neque rhoncus dignissim eu ut nibh. Vivamus mattis lobortis urna, nec pretium magna molestie non. Sed ac sodales ipsum. Suspendisse potenti. Nulla fermentum dolor et pulvinar interdum. Aliquam sagittis ornare lectus eget maximus. Ut consequat sollicitudin metus ut malesuada. Praesent tempor libero eu auctor dapibus. Vestibulum viverra augue quis vestibulum blandit. Vestibulum vel dapibus metus.</li>
+        </ul>
+    </div>
+    <div class="footer">
+      <div id="footerContent">
+      </div>
+      <div id="footerContent2">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
