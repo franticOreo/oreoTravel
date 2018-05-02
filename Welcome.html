@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Traveller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="welcome.js"></script>
+</head>
+<body>
+    
+    <!-- Main Menu -->
+
+    <div id="welcome">
+        <h1>Traveller</h1>
+        <div class="menu">
+            <input id="loginBtn" type="button" class="btn menu" value="Login">
+        </div>
+        <div class="menu">            
+            <input id="signupBtn" type="button" class="btn menu" value="Sign Up">
+        </div>
+        <div class="menu">            
+            <input id="aboutBtn" type="button" class="btn menu invert" value="About">
+        </div>
+    </div>
+
+    <!-- The following are three hidden pop-up divs -->
+
+    <div id="loginBlanket" class="blanket" style="display: none;">
+        <div id="loginPage" class="spotlight">
+            <h2>Login</h2>
+            <form name="login" class="register" action="Dash.html">
+                <div><label class="creds">Username</label></div>
+                <div><input type="email" class="creds" name="username" placeholder="Email" required></div>
+
+                <div><label class="creds">Password</label></div>
+                <div><input type="password" class="creds" name="password" placeholder="Password" required></div>
+
+                <div></div>
+                <div><input type="submit" class="btn" value="Login"></div>
+            </form>
+        </div>
+    </div>
+    <div id="signupBlanket" class="blanket" style="display: none;">
+        <div id="signupPage" class="spotlight">
+            <h2>Sign Up</h2>
+            <form id="signupForm" class="register" name="signup" action="Dash.html">
+                <div><label class="creds">First Name</label></div>
+                <div><input type="text" class="creds" name="first" placeholder="First Name" required></div>
+
+                <div><label class="creds">Last Name</label></div>
+                <div><input type="text" class="creds" name="last" placeholder="Last Name" required></div>
+
+                <div><label class="creds">Password</label></div>
+                <div><input type="password" class="creds" name="password" placeholder="Password" required></div>
+
+                <div><label class="creds">Email</label></div>
+                <div><input type="email" class="creds" name="email" placeholder="example@exam.com" required></div>
+
+                <div><label class="creds">Expertise</label></div>
+                <div><input type="text" class="creds" name="expertise" placeholder="Cheap flights etc..."></div>
+
+                <div></div>
+                <div><input type="submit" class="btn" value="Sign up"></div>
+            </form>
+        </div>
+    </div>
+    <div id="aboutBlanket" class="blanket" style="display: none;">
+        <div id="aboutPage" class="spotlight">
+            <h2>About</h2>
+            <p>
+                Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.<br><br>
+                Simply add tasks to your shared task tracker and anyone in your group can see and complete them.<br><br><br><br>
+                2195723<br>
+                Timothy Wise
+            </p>
+        </div>
+    </div>
+</body>
+</html>
