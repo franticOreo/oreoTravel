@@ -4,14 +4,21 @@ head
   meta(http-equiv='X-UA-Compatible' content='IE=edge')
   title Traveller
   meta(name='viewport' content='width=device-width, initial-scale=1')
-  link(href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre' rel='stylesheet')
-  link(rel='stylesheet' type='text/css' media='screen' href='main.css')
-  script(src='welcome.js')
+  //- link(href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre' rel='stylesheet')
+  link(rel='stylesheet', href='stylesheets/main.css')
+  script(src='javascripts/welcome.js')
+    //- link(rel='stylesheet', href='./stylesheets/style.css')
 // Main Menu
+
+//- form.namecard-form(action='/hello', method='post')
+//-   label.namecard-prompt Please enter your name
+//-     input.namecard-name(type='text', name='username')
+//-   button.namecard-submit(type='submit') Submit   
+  
 #welcome
   h1 Traveller
   .menu
-    input#loginBtn.btn.menu(type='button' value='Login')
+    input#loginBtn.btn.menu(type='button' value='Login' )
   .menu
     input#signupBtn.btn.menu(type='button' value='Sign Up')
   .menu
@@ -20,7 +27,7 @@ head
 #loginBlanket.blanket(style='display: none;')
   #loginPage.spotlight
     h2 Login
-    form.register(name='login' action='Dash.html')
+    form.register(name='login' action='/dash' method="POST")
       div
         label.creds Username
       div

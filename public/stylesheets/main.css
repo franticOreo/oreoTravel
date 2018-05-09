@@ -24,7 +24,7 @@ nav {
     background-color: salmon;
 }
 
-h1 {    
+h1 {
     grid-column: 1/4;
     -ms-grid-column: 1/4;
     color: salmon;
@@ -99,7 +99,7 @@ label {
     left: 50%;
     display: grid;
     grid-gap: 24px;
-    grid-template-columns: auto 240px auto; 
+    grid-template-columns: auto 240px auto;
     margin: auto;
     width: 480px;
     transform: translate(-50%, -50%);
@@ -172,7 +172,7 @@ label {
 
 #newTaskDesc:empty::before {
     content: "Description";
-    color: #555; 
+    color: #555;
 }
 
 div.task {
@@ -206,7 +206,7 @@ label.taskName {
     font-size: 24px;
     white-space: nowrap;
     overflow: hidden;
-    
+
     transition: height 1s;
 }
 
