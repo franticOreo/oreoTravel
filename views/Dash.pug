@@ -1,0 +1,77 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  meta(http-equiv='X-UA-Compatible' content='ie=edge')
+  link(href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre' rel='stylesheet')
+  link(rel='stylesheet' type='text/css' media='screen' href='main.css')
+  title Traveller - Dash
+  script(src='main.js')
+nav.paper
+  h2.sideInfo Traveller
+  br
+  label.sideInfo
+    b Profile:
+    |  John Smith
+  p.sideInfo
+    b Group
+    | :
+    br
+    br
+    |             Wendy Lee
+    br
+    |             Bruce Hamming
+    br
+    |             Jakey Jones
+  .menu
+    input#aboutBtnDash.btn.menu.invert2(type='button' value='About')
+#view.paper
+  label(for='orderBy') Order By
+  br
+  select#orderBy.flat(onchange='refreshTasks();')
+    option(value='0') Date
+    option(value='1') Priority
+    option(value='2') Assignment
+    option(value='3') Done
+#main
+  #newTask.paper
+    .wideGrid
+      input#newTaskName.flatinput(type='text' placeholder='New Task')
+    .wideGrid
+      #newTaskDesc.flatinput(contenteditable='true' placeholder='Decription')
+    div
+      label(for='newTaskDate') Due Date
+      br
+      input#newTaskDate.flat(type='date')
+    div
+      label(for='newTaskPriority') Priority
+      br
+      select#newTaskPriority.flat
+        option(value='0') High
+        option(value='1' selected='selected') Medium
+        option(value='2') Optional
+    div
+      label(for='newTaskAssign') Assign
+      br
+      select#newTaskAssign.flat
+    .wideGrid
+      input.btnEmbed(type='button' value='Add Task' onclick='addTask(this);')
+#infoBar.paper
+  label#taskCount.info
+  label#tasksRemain.info
+  label#modTime.info
+#aboutBlanket.blanket(style='display: none;')
+  #aboutPage.spotlight
+    h2 About
+    p
+      | Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.
+      br
+      br
+      |                 Simply add tasks to your shared task tracker and anyone in your group can see and complete them.
+      br
+      br
+      br
+      br
+      |                 2195723
+      br
+      |                 Timothy Wise
