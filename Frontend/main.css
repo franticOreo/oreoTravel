@@ -1,0 +1,337 @@
+body {
+    margin: 0;
+    background-color: #F4BA70;
+}
+
+body.dash {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: minmax(0px, 300px) minmax(100px, auto);
+    grid-template-rows: 60px auto 1fr 24px;
+    margin: 0px;
+    font-family: Helvetica, sans-serif;
+}
+
+nav {
+    position: relative;
+    grid-row: 1/4;
+    -ms-grid-row: 1/4;
+    padding: 24px;
+    background-color: salmon;
+}
+
+h1 {    
+    grid-column: 1/4;
+    -ms-grid-column: 1/4;
+    color: salmon;
+    font-family: 'Libre Baskerville', sans-serif;
+    font-size: 100px;
+    margin: auto;
+    padding: 0px;
+}
+
+h2 {
+    color: salmon;
+    font-family: 'Libre Baskerville', sans-serif;
+    font-size: 50px;
+    margin: 0px;
+    padding: 0px;
+}
+
+element {
+    font-family: Helvetica, sans-serif;
+}
+
+p {
+    font-family: Helvetica, sans-serif;
+}
+
+.btn {
+    width: 50%;
+    float: right;
+    background-color: salmon;
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Proza Libre', Helvetica, sans-serif;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+    transition: box-shadow 150ms;
+}
+
+.btn:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.menu {
+    grid-column: 2/3;
+    -ms-grid-column: 2/3;
+    width: 100%;
+    margin: 0px;
+}
+
+.invert {
+    background-color: #1e9b8c;
+}
+
+.invert2 {
+    width: 96px;
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    color: salmon;
+    background-color: white;
+}
+
+label {
+    font-family: Helvetica, sans-serif;
+}
+
+#welcome {
+    position: absolute;
+    z-index: -1;
+    top: 35%;
+    left: 50%;
+    display: grid;
+    grid-gap: 24px;
+    grid-template-columns: auto 240px auto; 
+    margin: auto;
+    width: 480px;
+    transform: translate(-50%, -50%);
+}
+
+.blanket {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 1;
+    background-color: rgba(1, 1, 1, 0.3);
+}
+
+.register {
+    display: grid;
+    grid-gap: 12px;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: repeat(min-content);
+}
+
+#view {
+    position: relative;
+    background-color: #1e9b8c;
+    padding: 12px;
+}
+
+#main {
+    position: relative;
+    display: grid;
+    min-height: 0px;
+    grid-gap: 12px;
+    grid-template-rows: repeat(autofill, min-content);
+    overflow: auto;
+    padding: 12px;
+}
+
+#infoBar {
+    grid-column: 1/3;
+    padding: 3px;
+    background-color: #115757;
+}
+
+#newTask {
+    display: grid;
+    grid-gap: 12px;
+    grid-template-columns: min-content min-content auto;
+    grid-template-rows: repeat(auto-fill, min-content);
+    position: relative;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.wideGrid {
+    grid-column-start: 1;
+    grid-column-end: 4;
+}
+
+#newTaskName {
+    white-space: normal;
+    text-overflow: ellipsis;
+    font-family: Helvetica, sans-serif;
+    font-size: 24px;
+}
+
+#newTaskDesc {
+    resize: none;
+}
+
+#newTaskDesc:empty::before {
+    content: "Description";
+    color: #555; 
+}
+
+div.task {
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: auto;
+    position: relative;
+    border-radius: 6px;
+    background-color: white;
+}
+
+div.taskContent {
+    min-height: 12px;
+    padding: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.bottomBar {
+    height: 24px;
+    padding: 6px 12px 0 12px;
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+div.task > element {
+    font-family: 'Proza Libre', Helvetica, sans-serif;
+    color: blue;
+}
+
+label.taskName {
+    font-size: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    
+    transition: height 1s;
+}
+
+div.task:hover label.taskName{
+    white-space: normal;
+}
+
+.flatinput {
+    display: inline-block;
+    white-space: normal;
+    width: 100%;
+    margin: 0px;
+    border: 0px;
+    box-sizing: border-box;
+}
+
+.flatinput:focus {
+    outline-width: 0px;
+}
+
+.flat {
+    border: 0;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.sideInfo {
+    color: white;
+}
+
+input.creds {
+    width: 100%;
+    float: right;
+    padding: 12px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Helvetica, sans-serif;
+}
+
+label.creds {
+    line-height: 41.5px;
+    height: 41.5px;
+    font-family: 'Proza Libre', Helvetica, sans-serif;
+}
+
+.creds:focus {
+    outline: none;
+}
+
+input:required:valid, input:focus:valid {
+    border-color: green;
+}
+
+input:required:invalid, input:focus:invalid {
+    border-color: salmon;
+}
+
+.priority {
+    bottom: 0;
+    left: 0;
+    padding: 2px;
+    float: left;
+    font-size: 12px;
+}
+
+.info {
+    color: white;
+    float: right;
+    padding: 2px 8px;
+    font-size: 12px;
+}
+
+.btnEmbed {
+    float: right;
+    outline: none;
+    border: none;
+    border-radius: 1px;
+    padding: 4px, 4px, 2px, 4px;
+    margin-left: 8px;
+    font-family: 'Proza Libre', Helvetica, sans-serif;
+    font-size: 12px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0);
+    transition: color 100ms, "background-color" 100ms;
+}
+
+.btnEmbed:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.task:hover .btnEmbed, #newTask .btnEmbed {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.paper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 6px;
+    z-index: -1;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+    overflow: auto;
+}
+
+.paper:hover::before {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.spotlight {
+    display: grid;
+    grid-gap: 24px;
+    padding: 24px;
+    width: 40%;
+    margin: auto;
+    margin-top: 120px;
+    border-radius: 24px;
+    background-color: white;
+}
+
+@font-face {
+    font-family: 'Wicked Grit';
+    src: url(WickedGrit.ttf);
+}

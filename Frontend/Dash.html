@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <title>Traveller - Dash</title>
+    <script src="main.js"></script>
+</head>
+<body class="dash">
+    <nav class="paper">
+        <h2 class="sideInfo">Traveller</h2>
+        <br>
+        <label class="sideInfo"><b>Profile:</b> John Smith</label>
+        <p class="sideInfo">
+            <b>Group</b>:<br><br>
+
+            Wendy Lee<br>
+            Bruce Hamming<br>
+            Jakey Jones
+        </p>
+        <div class="menu">            
+            <input id="aboutBtnDash" type="button" class="btn menu invert2" value="About">
+        </div>
+    </nav>
+    <div id="view" class="paper">
+        <label for="orderBy">Order By</label><br>
+        <select id="orderBy" class="flat" onchange="refreshTasks();">
+            <option value="0">Date</option>
+            <option value="1">Priority</option>
+            <option value="2">Assignment</option>
+            <option value="3">Done</option>
+        </select>
+    </div>
+    <div id="main">
+        <div id="newTask" class="paper">
+            <div class="wideGrid">
+                <input type="text" class="flatinput" id="newTaskName" placeholder="New Task">
+            </div>
+            <div class="wideGrid">
+                <div id="newTaskDesc" class="flatinput" contenteditable="true" placeholder="Decription">
+                    
+                </div>
+            </div>
+            <div>
+                <label for="newTaskDate">Due Date</label><br>
+                <input type="date" id="newTaskDate" class="flat">
+            </div>
+            <div>
+                <label for="newTaskPriority">Priority</label><br>
+                <select id="newTaskPriority" class="flat">
+                    <option value="0">High</option>
+                    <option value="1" selected="selected">Medium</option>
+                    <option value="2">Optional</option>
+                </select>            
+            </div>
+            <div>
+                <label for="newTaskAssign">Assign</label><br>
+                <select id="newTaskAssign" class="flat"></select>
+            </div>
+            <div class="wideGrid">
+                <input type="button" class="btnEmbed" value="Add Task" onclick="addTask(this);">
+            </div>
+        </div>
+    </div>
+    <div id="infoBar" class="paper">
+        <label id="taskCount" class="info"></label>
+        <label id="tasksRemain" class="info"></label>
+        <label id="modTime" class="info"></label>
+    </div>
+    <div id="aboutBlanket" class="blanket" style="display: none;">
+        <div id="aboutPage" class="spotlight">
+            <h2>About</h2>
+            <p>
+                Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.<br><br>
+                Simply add tasks to your shared task tracker and anyone in your group can see and complete them.<br><br><br><br>
+                2195723<br>
+                Timothy Wise
+            </p>
+        </div>
+    </div>
+</body>
+</html>
