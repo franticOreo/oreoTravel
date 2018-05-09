@@ -1,83 +1,76 @@
-doctype html
-head
-  meta(charset='utf-8')
-  meta(http-equiv='X-UA-Compatible' content='IE=edge')
-  title Traveller
+extends layout
+
+block content
   meta(name='viewport' content='width=device-width, initial-scale=1')
   //- link(href='https://fonts.googleapis.com/css?family=Libre+Baskerville|Proza+Libre' rel='stylesheet')
   link(rel='stylesheet', href='stylesheets/main.css')
   script(src='javascripts/welcome.js')
     //- link(rel='stylesheet', href='./stylesheets/style.css')
-// Main Menu
+  // Main Menu
 
-//- form.namecard-form(action='/hello', method='post')
-//-   label.namecard-prompt Please enter your name
-//-     input.namecard-name(type='text', name='username')
-//-   button.namecard-submit(type='submit') Submit   
-  
-#welcome
-  h1 Traveller
-  .menu
-    input#loginBtn.btn.menu(type='button' value='Login' )
-  .menu
-    input#signupBtn.btn.menu(type='button' value='Sign Up')
-  .menu
-    input#aboutBtn.btn.menu.invert(type='button' value='About')
-// The following are three hidden pop-up divs
-#loginBlanket.blanket(style='display: none;')
-  #loginPage.spotlight
-    h2 Login
-    form.register(name='login' action='/dash' method="POST")
-      div
-        label.creds Username
-      div
-        input.creds(type='email' name='username' placeholder='Email' required='')
-      div
-        label.creds Password
-      div
-        input.creds(type='password' name='password' placeholder='Password' required='')
-      div
-      div
-        input.btn(type='submit' value='Login')
-#signupBlanket.blanket(style='display: none;')
-  #signupPage.spotlight
-    h2 Sign Up
-    form#signupForm.register(name='signup' action='Dash.html')
-      div
-        label.creds First Name
-      div
-        input.creds(type='text' name='first' placeholder='First Name' required='')
-      div
-        label.creds Last Name
-      div
-        input.creds(type='text' name='last' placeholder='Last Name' required='')
-      div
-        label.creds Password
-      div
-        input.creds(type='password' name='password' placeholder='Password' required='')
-      div
-        label.creds Email
-      div
-        input.creds(type='email' name='email' placeholder='example@exam.com' required='')
-      div
-        label.creds Expertise
-      div
-        input.creds(type='text' name='expertise' placeholder='Cheap flights etc...')
-      div
-      div
-        input.btn(type='submit' value='Sign up')
-#aboutBlanket.blanket(style='display: none;')
-  #aboutPage.spotlight
-    h2 About
-    p
-      | Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.
-      br
-      br
-      |                 Simply add tasks to your shared task tracker and anyone in your group can see and complete them.
-      br
-      br
-      br
-      br
-      |                 2195723
-      br
-      |                 Timothy Wise
+  #welcome
+    h1 Traveller
+    .menu
+      input#loginBtn.btn.menu(type='button' value='Login' )
+    .menu
+      input#signupBtn.btn.menu(type='button' value='Sign Up')
+    .menu
+      input#aboutBtn.btn.menu.invert(type='button' value='About')
+  // The following are three hidden pop-up divs
+  #loginBlanket.blanket(style='display: none;')
+    #loginPage.spotlight
+      h2 Login
+      form.register(name='login' action='/dash' method="POST")
+        div
+          label.creds Username
+        div
+          input.creds(type='email' name='username' placeholder='Email' required='')
+        div
+          label.creds Password
+        div
+          input.creds(type='password' name='password' placeholder='Password' required='')
+        div
+        div
+          input.btn(type='submit' value='Login')
+  #signupBlanket.blanket(style='display: none;')
+    #signupPage.spotlight
+      h2 Sign Up
+      form#signupForm.register(name='signup' action='Dash.html')
+        div
+          label.creds First Name
+        div
+          input.creds(type='text' name='first' placeholder='First Name' required='')
+        div
+          label.creds Last Name
+        div
+          input.creds(type='text' name='last' placeholder='Last Name' required='')
+        div
+          label.creds Password
+        div
+          input.creds(type='password' name='password' placeholder='Password' required='')
+        div
+          label.creds Email
+        div
+          input.creds(type='email' name='email' placeholder='example@exam.com' required='')
+        div
+          label.creds Expertise
+        div
+          input.creds(type='text' name='expertise' placeholder='Cheap flights etc...')
+        div
+        div
+          input.btn(type='submit' value='Sign up')
+  #aboutBlanket.blanket(style='display: none;')
+    #aboutPage.spotlight
+      h2 About
+      p
+        | Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.
+        br
+        br
+        |                 Simply add tasks to your shared task tracker and anyone in your group can see and complete them.
+        br
+        br
+        br
+        br
+        |                 2195723
+        br
+        |                 Timothy Wise
