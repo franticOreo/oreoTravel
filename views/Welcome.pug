@@ -22,7 +22,7 @@ block content
       h2 Login
       form.register(name='login' action='/dash' method="POST")
         div
-          label.creds Username
+          label.creds Email
         div
           input.creds(type='email' name='username' placeholder='Email' required='')
         div
@@ -35,15 +35,15 @@ block content
   #signupBlanket.blanket(style='display: none;')
     #signupPage.spotlight
       h2 Sign Up
-      form#signupForm.register(name='signup' action='Dash.html')
+      form#signupForm.register(action='/dash' method="POST")
         div
           label.creds First Name
         div
-          input.creds(type='text' name='first' placeholder='First Name' required='')
+          input.creds(type='text' name='firstName' placeholder='First Name' required='')
         div
           label.creds Last Name
         div
-          input.creds(type='text' name='last' placeholder='Last Name' required='')
+          input.creds(type='text' name='lastName' placeholder='Last Name' required='')
         div
           label.creds Password
         div
