@@ -9,6 +9,10 @@ router.get('/', function(req, res) {
   res.render('Welcome', renderText);
 });
 
+router.get('/dash', function(req, res) {
+  res.render('Dash', renderText);
+});
+
 
 router.post('/dash', function(req, res, next) {
   if (req.body.firstName,
@@ -17,6 +21,8 @@ router.post('/dash', function(req, res, next) {
       req.body.email,
       req.body.expertise) { //if all fields entered in signup form
 
+        // need to check for duplicate email
+        //
     var userData = {                //create object with form input
       firstName: req.body.firstName,
       lastName: req.body.lastName,
