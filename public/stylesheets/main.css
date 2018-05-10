@@ -1,3 +1,15 @@
+:root {
+    --primary-color: salmon;
+    --secondary-color: #F4BA70;
+    --tertiary-color: #1e9b8c;
+    --light-color: white;
+    --dark-color: #115757;
+
+    --header-font: 'Libre Baskerville', sans-serif;
+    --subtitle-font: 'Proza Libre', Helvetica, sans-serif;
+    --body-font: Helvetica, sans-serif;
+}
+
 body {
     position: fixed;
     width: 100%;
@@ -8,55 +20,49 @@ body {
     grid-template-columns: minmax(0px, 300px) minmax(100px, auto);
     grid-template-rows: 60px auto 1fr 24px;
     margin: 0px;
-    font-family: Helvetica, sans-serif;
+    font-family: var(--body-font);
     margin: 0;
-    background-color: #F4BA70;
+    background-color: var(--secondary-color)
 }
 
 nav {
     position: relative;
     grid-row: 1/4;
     -ms-grid-row: 1/4;
-    padding: 24px;
-    background-color: salmon;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 72px auto 72px;
+    background-color: var(--primary-color)
 }
 
 h1 {
     grid-column: 1/4;
     -ms-grid-column: 1/4;
-    color: salmon;
-    font-family: 'Libre Baskerville', sans-serif;
-    font-size: 100px;
+    color: var(--primary-color);
+    font-family: var(--header-font);
+    font-size: 70px;
     margin: auto;
     padding: 0px;
 }
 
 h2 {
-    color: salmon;
-    font-family: 'Libre Baskerville', sans-serif;
-    font-size: 50px;
+    color: var(--primary-color);
+    font-family: var(--header-font);
+    font-size: 40px;
     margin: 0px;
     padding: 0px;
-}
-
-element {
-    font-family: Helvetica, sans-serif;
-}
-
-p {
-    font-family: Helvetica, sans-serif;
 }
 
 .btn {
     width: 50%;
     float: right;
-    background-color: salmon;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--light-color);
     padding: 14px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'Proza Libre', Helvetica, sans-serif;
+    font-family: var(--subtitle-font);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
     transition: box-shadow 150ms;
 }
@@ -73,20 +79,22 @@ p {
 }
 
 .invert {
-    background-color: #1e9b8c;
+    background-color: var(--tertiary-color);
 }
 
 .invert2 {
-    width: 96px;
+    color: var(--primary-color);
+    background-color: var(--light-color);
+}
+
+#aboutBtnDash {
+    left: 0;
+    bottom: 0;
     position: absolute;
-    bottom: 24px;
-    left: 24px;
-    color: salmon;
-    background-color: white;
 }
 
 label {
-    font-family: Helvetica, sans-serif;
+    font-family: var(--body-font);
 }
 
 #welcome {
@@ -120,7 +128,7 @@ label {
 
 #view {
     position: relative;
-    background-color: #1e9b8c;
+    background-color: var(--tertiary-color);
     padding: 12px;
 }
 
@@ -137,7 +145,7 @@ label {
 #infoBar {
     grid-column: 1/3;
     padding: 3px;
-    background-color: #115757;
+    background-color: var(--dark-color);
 }
 
 #newTask {
@@ -148,7 +156,7 @@ label {
     position: relative;
     padding: 12px;
     border-radius: 6px;
-    background-color: white;
+    background-color: var(--light-color);
 }
 
 .wideGrid {
@@ -159,7 +167,7 @@ label {
 #newTaskName {
     white-space: normal;
     text-overflow: ellipsis;
-    font-family: Helvetica, sans-serif;
+    font-family: var(--body-font);
     font-size: 24px;
 }
 
@@ -178,7 +186,7 @@ div.task {
     grid-template-columns: auto;
     position: relative;
     border-radius: 6px;
-    background-color: white;
+    background-color: var(--light-color);
 }
 
 div.taskContent {
@@ -195,7 +203,7 @@ div.bottomBar {
 }
 
 div.task > element {
-    font-family: 'Proza Libre', Helvetica, sans-serif;
+    font-family: var(--subtitle-font);
     color: blue;
 }
 
@@ -232,7 +240,7 @@ div.task:hover label.taskName{
 }
 
 .sideInfo {
-    color: white;
+    color: var(--light-color);
 }
 
 input.creds {
@@ -242,13 +250,13 @@ input.creds {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-family: Helvetica, sans-serif;
+    font-family: var(--body-font);
 }
 
 label.creds {
     line-height: 41.5px;
     height: 41.5px;
-    font-family: 'Proza Libre', Helvetica, sans-serif;
+    font-family: var(--subtitle-font);
 }
 
 .creds:focus {
@@ -260,7 +268,7 @@ input:required:valid, input:focus:valid {
 }
 
 input:required:invalid, input:focus:invalid {
-    border-color: salmon;
+    border-color: var(--primary-color);
 }
 
 .priority {
@@ -272,7 +280,7 @@ input:required:invalid, input:focus:invalid {
 }
 
 .info {
-    color: white;
+    color: var(--light-color);
     float: right;
     padding: 2px 8px;
     font-size: 12px;
@@ -285,7 +293,7 @@ input:required:invalid, input:focus:invalid {
     border-radius: 1px;
     padding: 4px, 4px, 2px, 4px;
     margin-left: 8px;
-    font-family: 'Proza Libre', Helvetica, sans-serif;
+    font-family: var(--subtitle-font);
     font-size: 12px;
     background-color: transparent;
     color: rgba(0, 0, 0, 0);
@@ -325,10 +333,5 @@ input:required:invalid, input:focus:invalid {
     margin: auto;
     margin-top: 120px;
     border-radius: 24px;
-    background-color: white;
-}
-
-@font-face {
-    font-family: 'Wicked Grit';
-    src: url(WickedGrit.ttf);
+    background-color: var(--light-color);
 }
