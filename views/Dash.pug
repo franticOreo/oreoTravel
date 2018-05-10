@@ -3,23 +3,12 @@ extends layout
 block content
   script(src='javascripts/main.js')
   nav.paper
-    h2.sideInfo Traveller
-    br
-    label.sideInfo
-      b Profile:
-      |  John Smith
-    p.sideInfo
-      b Group
-      | :
-      br
-      br
-      |             Wendy Lee
-      br
-      |             Bruce Hamming
-      br
-      |             Jakey Jones
-    .menu
-      input#aboutBtnDash.btn.menu.invert2(type='button' value='About')
+    div
+      h2.sideInfo #{title}
+    div
+      label.sideInfo #{first} #{last}
+    div
+      input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
     label(for='orderBy') Order By
     br

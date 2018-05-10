@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 
+var renderText = { title: 'Oreo Travel', first: 'John', last: 'Smith'};
+
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('Welcome');
+  res.render('Welcome', renderText);
 });
 
 
@@ -32,6 +34,10 @@ router.post('/dash', function(req, res, next) {
 
     })
   }
+
+  // router.post('/dash', function(req, res) {
+  //   req.
+  //   res.render('Dash', renderText);
 });
 
 
