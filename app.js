@@ -11,9 +11,27 @@ var helloRouter = require('./routes/hello');
 
 var app = express();
 
-// mongodb conn
-mongoose.connect("mongodb://localhost:27017/oreoTravel");
+// mongodb conn mongodb:/franticOreo:K4m527x8M@ds119350.mlab.com:19350/oreo_travel_db
+
+var dbURI = "mongodb://franticOreoMinion:lol@ds119350.mlab.com:19350/oreo_travel_db"
+mongoose.connect(dbURI, function (err,database) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+});
+
 var db = mongoose.connection;
+
+db.on('connected', function () {
+  console.log('Mongoose connected to '+ dbURI)
+})
+
+db.on('error', function () {
+  console.log('Mongoose connectedion error '+ dbURI)
+})
+
+
 
 db.on('error', console.error.bind(console, 'connection error: '))
 
