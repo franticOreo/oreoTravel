@@ -145,6 +145,20 @@ label {
     grid-template-rows: auto;
     background-color: var(--light-color);
     border: 0 24px 0 24px var(--light-color);
+    font-size: 16px;
+}
+
+.btnNav {
+    float: right;
+    outline: none;
+    border: none;
+    border-radius: 1px;
+    padding: 2px, 4px;
+    margin-left: 8px;
+    font-size: 14px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.5);
+    transition: color 100ms, "background-color" 100ms;
 }
 
 #newTask {
@@ -290,7 +304,7 @@ input:required:invalid, input:focus:invalid {
     outline: none;
     border: none;
     border-radius: 1px;
-    padding: 4px, 4px, 2px, 4px;
+    padding: 2px, 4px;
     margin-left: 8px;
     font-family: var(--subtitle-font);
     font-size: 12px;
@@ -305,6 +319,10 @@ input:required:invalid, input:focus:invalid {
 
 .task:hover .btnEmbed, #newTask .btnEmbed {
     color: rgba(0, 0, 0, 0.5);
+}
+
+#profile:hover .btnNav {
+    color:var(--primary-color);
 }
 
 .paper::before {
