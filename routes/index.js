@@ -11,9 +11,13 @@ router.get('/', function(req, res) {
 
 router.get('/dash', function(req, res) {
   res.render('Dash', renderText);
+  if (error) {
+    console.log(error)
+  }
 });
 
-
+// POST when Sign In form is completed
+// if successful redirects user to main Dash'
 router.post('/dash', function(req, res, next) {
   if (req.body.firstName,
       req.body.lastName,
@@ -30,6 +34,7 @@ router.post('/dash', function(req, res, next) {
       email: req.body.email,
       expertise: req.body.expertise
     }
+    console.log('1')
 
     User.create(userData, function(error , user) { // use the mongoose model, users
         if (error) {                               // and place the form data in it
@@ -38,12 +43,14 @@ router.post('/dash', function(req, res, next) {
           return res.redirect('/dash');
         }
 
-    })
+    });
+  }
+   else {
+      var err = new Error('All fields required.');
+      err.status = 400;
+      return next(err);
   }
 
-  // router.post('/dash', function(req, res) {
-  //   req.
-  //   res.render('Dash', renderText);
 });
 
 
