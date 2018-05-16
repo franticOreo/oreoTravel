@@ -1,0 +1,66 @@
+extends layout
+//- page for introducing user to the website
+//- suggesting actions for the user to get used to site
+
+
+
+block content
+  script(src='javascripts/main.js')
+  nav.paper
+    div
+      h2.sideInfo Welcome to #{title}!
+      h5.byline Get Started by Finding Users and then adding tasks
+    div
+      label.sideInfo #{first} #{last}
+    div
+      input#aboutBtnDash.btn.invert2(type='button' value='About')
+  #view.paper
+    label(for='orderBy') Order By
+    br
+    select#orderBy.flat(onchange='refreshTasks();')
+      option(value='0') Date
+      option(value='1') Priority
+      option(value='2') Assignment
+      option(value='3') Done
+  #main
+    #newTask.paper
+      .wideGrid
+        input#newTaskName.flatinput(type='text' placeholder='New Task')
+      .wideGrid
+        #newTaskDesc.flatinput(contenteditable='true' placeholder='Decription')
+      div
+        label(for='newTaskDate') Due Date
+        br
+        input#newTaskDate.flat(type='date')
+      div
+        label(for='newTaskPriority') Priority
+        br
+        select#newTaskPriority.flat
+          option(value='0') High
+          option(value='1' selected='selected') Medium
+          option(value='2') Optional
+      div
+        label(for='newTaskAssign') Assign
+        br
+        select#newTaskAssign.flat
+      .wideGrid
+        input.btnEmbed(type='button' value='Add Task' onclick='addTask(this);')
+  #infoBar.paper
+    label#taskCount.info
+    label#tasksRemain.info
+    label#modTime.info
+  #aboutBlanket.blanket(style='display: none;')
+    #aboutPage.spotlight
+      h2 About
+      p
+        | Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.
+        br
+        br
+        |                 Simply add tasks to your shared task tracker and anyone in your group can see and complete them.
+        br
+        br
+        br
+        br
+        |                 2195723
+        br
+        |                 Timothy Wise
