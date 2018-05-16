@@ -8,7 +8,7 @@ block content
       h2.sideInfo #{title}
     div#profile.invert2
       div
-        label #{first} #{last}
+        label Welcome #{firstName} #{lastName}
       div
         button#btnNewTrip.btnNav
           i.material-icons add
@@ -16,8 +16,8 @@ block content
         button#btnSettings.btnNav
           i.material-icons settings
     div
-      label.sideInfo #{name}
-      label.sideInfo #{intro}
+      if intro
+        label.sideInfo #{intro}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper

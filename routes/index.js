@@ -2,35 +2,32 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 
-var renderText = { title: 'Oreo Travel', first: 'John', last: 'Smith'};
-
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', renderText);
+  res.render('index', {title: 'Oreo Travel'});
 });
 
-router.get('/welcome', function(req, res) {
-  res.render('dash', {title: user.firstName, intro:'Get Started by Finding Users and then adding tasks'
-      });
-  if(req.session.userId){
-    console.log(true)
+router.get('/welcome', function(req, res, next) {
+
+  // if there is no session respond with unauthorised
+  if(!req.session.userId){
+    var err = new Error('You are not authorised to be here matey');
+    err.status = 403; // 403 is a forbidden HTTP status code
+    return next(err)
   }
+  // retrieve user data from mongo using session id
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) {
+        return next(error)
+      } else { //display user info on dash
+        res.render('dash', {title: 'Oreo Travel' ,firstName:user.firstName, lastName:user.lastName , intro:'Get Started by Finding Users and then adding tasks'
+            });
+      }
+
+    })
 });
 
-
-
-// router.get('/dash', function(req, res) {
-//   res.render('Dash', renderText);
-//   if (error) {
-//     console.log(error)
-//   }
-// });
-
-// GET Dash
-// Response when User successfully logs in
-// router.get('/Dash', function (req, res, next) {
-//   return res.render('login', {title: 'Log In '});
-// });
 
 // POST login
 // When User Logins In from index
@@ -71,7 +68,7 @@ router.get('/dash', function(req, res, next) {
       if (error) {
         return next(error);
       } else {
-        return res.render('dash', {title: 'Logged In', name: user.name});
+        return res.render('dash', {title: 'Logged In', firstName: user.firstName});
       }
     });
 });

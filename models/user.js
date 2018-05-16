@@ -33,16 +33,20 @@ var UserSchema = new mongoose.Schema({
 // authenticate input against db docs
 // creating authenticate method
 UserSchema.statics.authenticate = function(email, password, callback) {
+  // set up mongoose query to search for email
   User.findOne({ email: email })
     .exec(function(error, user) {
       if (error) {
         return callback(error);
       } else if ( !user ) {
-        err.status = 401;
+        err.status = 401; // if error with mongoose query
         return callback(err);
       }
+      // comaare hashed password with plain text password
+      // callback 'result' returns either true or false
       bcrypt.compare(password, user.password, function(error, result) {
         if (result === true) {
+          // callback param is null because result was true
           return callback(null, user);
         } else {
           return callback();
