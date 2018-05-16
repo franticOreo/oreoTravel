@@ -1,10 +1,20 @@
 extends layout
 
 block content
+  link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   script(src='javascripts/main.js')
   nav.paper
     div
       h2.sideInfo #{title}
+    div#profile.invert2
+      div
+        label #{first} #{last}
+      div
+        button#btnNewTrip.btnNav
+          i.material-icons add
+      div
+        button#btnSettings.btnNav
+          i.material-icons settings
     div
       label.sideInfo #{name}
       label.sideInfo #{intro}
@@ -60,3 +70,9 @@ block content
         |                 2195723
         br
         |                 Timothy Wise
+  #settingsBlanket.blanket(style='display: none;')
+    #settingsPage.spotlight
+      h2 Settings
+  #newTripBlanket.blanket(style='display: none;')
+    #newTripPage.spotlight
+      h2 New Trip

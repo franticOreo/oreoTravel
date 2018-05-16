@@ -17,11 +17,31 @@ window.onload = function() {
         if (!document.getElementById("aboutPage").contains(e.target)) toggleAboutDisplay();
     });
 
+    this.document.getElementById("btnSettings").addEventListener("click", toggleSettingsDisplay);
+    this.document.getElementById("settingsBlanket").addEventListener("click", function(e){
+        if (!document.getElementById("settingsPage").contains(e.target)) toggleSettingsDisplay();
+    });
+
+    this.document.getElementById("btnNewTrip").addEventListener("click", toggleNewTripDisplay);
+    this.document.getElementById("newTripBlanket").addEventListener("click", function(e){
+        if (!document.getElementById("newTripPage").contains(e.target)) toggleNewTripDisplay();
+    });
+
     refreshTasks();
 }
 
 function toggleAboutDisplay(){
     var e = document.getElementById("aboutBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+function toggleSettingsDisplay(){
+    var e = document.getElementById("settingsBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+function toggleNewTripDisplay(){
+    var e = document.getElementById("newTripBlanket");
     e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
 }
 
