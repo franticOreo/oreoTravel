@@ -3,6 +3,7 @@ extends layout
 block content
   link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   script(src='javascripts/main.js')
+  script(src='javascripts/city_state.js')
   nav.paper
     div
       h2.sideInfo #{title}
@@ -69,23 +70,18 @@ block content
         div
           label.creds Title
         div
-          input.creds(type='text' name='title' placeholder='Tripping Balls' required='')
-        div
-          label.creds Destination
-        div
-          input.creds(type='text' name='lastName' placeholder='Last Name' required='')
-        #widget
-          form
-            | Region» 
-            select(onchange="set_country(this,country,city_state)" size="1" name="region")
-              option(value="" selected="selected") SELECT REGION
-              option(value="")
-              script(type="text/javascript").
-                setRegions(this);
-            | Country» 
-            select(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)")
-            | City/State» 
-            select(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)")
+          input.creds(type='text' name='title' placeholder='Tripping' required='')
+        div#destinationSelector
+          | Region» 
+          select(onchange="set_country(this,country,city_state)" size="1" name="region")
+            option(value="" selected="selected") SELECT REGION
+            option(value="")
+            script(type="text/javascript").
+              setRegions(this);
+          | Country» 
+          select(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)")
+          | City/State» 
+          select(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)")
           #txtregion
           #txtplacename
         div
