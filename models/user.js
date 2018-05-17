@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt')
+var Trip = require('./trip.js')
+
 
 
 var UserSchema = new mongoose.Schema({
@@ -28,7 +31,8 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  }
+  },
+  trips: [{type: Schema.Types.ObjectId, ref: 'Trip'}]
 
 });
 

@@ -66,11 +66,11 @@ block content
   #newTripBlanket.blanket(style='display: none;')
     #newTripPage.spotlight
       h2 New Trip
-      form#newTripForm.register(action='/' method="POST")
+      form#newTripForm.register(action='/addtrip' method="POST")
         div
           label.creds Title
         div
-          input.creds(type='text' name='title' placeholder='Tripping' required='')
+          input.creds(type='text'  name='tripName' placeholder='Tripping' required='')
         div#destinationSelector
           | Region» 
           select(onchange="set_country(this,country,city_state)" size="1" name="region")

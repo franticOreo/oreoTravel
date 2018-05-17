@@ -47,8 +47,12 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/addtask', function(req, res) {
-  res.render('dash', {title: 'Orerenderedl'});
+router.get('/addtrip', function(req, res) {
+  res.render('dash', {title: req.body.tripName})
+});
+
+router.post('/addtrip', function(req, res) {
+  res.redirect('/dash/addtrip')
 });
 
 
