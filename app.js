@@ -7,11 +7,16 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 
 
+
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var helloRouter = require('./routes/hello');
+// var usersRouter = require('./routes/users');
+var dashRouter = require('./routes/dash');
+var welcomeRouter = require('./routes/welcome');
 
 var app = express();
+
+
+
 
 // use session module for tracking logins
 app.use(session({
@@ -19,6 +24,8 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }));
+
+
 
 // mongodb conn mongodb:/franticOreo:K4m527x8M@ds119350.mlab.com:19350/oreo_travel_db
 
@@ -53,8 +60,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-// app.use('/hello', helloRouter);
+// app.use('/users', usersRouter);
+app.use('/dash', dashRouter);
+app.use('/welcome', welcomeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

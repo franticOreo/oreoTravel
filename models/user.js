@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt')
 
+
 var UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -30,6 +31,8 @@ var UserSchema = new mongoose.Schema({
   }
 
 });
+
+
 // authenticate input against db docs
 // creating authenticate method
 UserSchema.statics.authenticate = function(email, password, callback) {
@@ -66,6 +69,8 @@ UserSchema.pre('save', function (next) {
     next();
   })
 })
+
+
 
 var User = mongoose.model('User', UserSchema); // creates model name and points to schema
                                                 // it wants to use

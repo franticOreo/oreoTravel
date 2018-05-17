@@ -29,13 +29,13 @@ block content
       option(value='2') Assignment
       option(value='3') Done
   #main
-    #newTask.paper
+    form#newTask.paper(action='/addtask' method='POST')
       .wideGrid
-        input#newTaskName.flatinput(type='text' placeholder='New Task')
+        input#newTaskName.flatinput(type='text' name='taskName' placeholder='New Task')
       .wideGrid
-        #newTaskDesc.flatinput(contenteditable='true' placeholder='Decription')
+        #newTaskDesc.flatinput(contenteditable='true' name='taskDescription' placeholder='Decription')
       div
-        label(for='newTaskDate') Due Date
+        label(for='newTaskDate' name='taskDate') Due Date
         br
         input#newTaskDate.flat(type='date')
       div
