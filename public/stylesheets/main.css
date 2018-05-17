@@ -148,7 +148,7 @@ label {
     font-size: 16px;
 }
 
-#destinationSelector {
+#destinationWidget {
     grid-column: 1/3;
 }
 
@@ -260,7 +260,7 @@ div.task:hover label.taskName{
     color: var(--light-color);
 }
 
-input.creds {
+input.creds, select.creds {
     width: 100%;
     float: right;
     padding: 12px 12px;
