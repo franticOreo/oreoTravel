@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var TripSchema = new mongoose.Schema(
     {
         title:String,
-        description: String,
+        region: String,
 
     }
 );

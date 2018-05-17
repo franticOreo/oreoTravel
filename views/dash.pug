@@ -19,6 +19,8 @@ block content
     div
       if intro
         label.sideInfo #{intro}
+      if tripName
+        label.sideInfo #{tripName}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
@@ -66,7 +68,7 @@ block content
   #newTripBlanket.blanket(style='display: none;')
     #newTripPage.spotlight
       h2 New Trip
-      form#newTripForm.register(action='/addtrip' method="POST")
+      form#newTripForm.register(action='/dash/addtrip' method="POST")
         div
           label.creds Title
         div

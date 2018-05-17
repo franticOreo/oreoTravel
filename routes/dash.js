@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+var Trip = require('../models/trip');
 
 
 // POST login
@@ -47,12 +48,18 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.get('/addtrip', function(req, res) {
-  res.render('dash', {title: req.body.tripName})
-});
 
-router.post('/addtrip', function(req, res) {
-  res.redirect('/dash/addtrip')
+router.post('/addtrip', function(req, res, next) {
+  new Trip({
+    title: req.body.tripName,
+    region: req.body.region
+  }).save(function (err, trip, count) {
+    if (err) {
+      return err;
+  } else {
+    res.redirect('/dash');
+  }
+});
 });
 
 
