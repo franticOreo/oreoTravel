@@ -58,21 +58,36 @@ block content
   #aboutBlanket.blanket(style='display: none;')
     #aboutPage.spotlight
       h2 About
-      p
-        | Traveller is a collaborative application designed to make planning your next holiday or business trip a breeze.
-        br
-        br
-        |                 Simply add tasks to your shared task tracker and anyone in your group can see and complete them.
-        br
-        br
-        br
-        br
-        |                 2195723
-        br
-        |                 Timothy Wise
+      p #{About}
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
       h2 Settings
   #newTripBlanket.blanket(style='display: none;')
     #newTripPage.spotlight
       h2 New Trip
+      form#newTripForm.register(action='/' method="POST")
+        div
+          label.creds Title
+        div
+          input.creds(type='text' name='title' placeholder='Tripping Balls' required='')
+        div
+          label.creds Destination
+        div
+          input.creds(type='text' name='lastName' placeholder='Last Name' required='')
+        #widget
+          form
+            | Region» 
+            select(onchange="set_country(this,country,city_state)" size="1" name="region")
+              option(value="" selected="selected") SELECT REGION
+              option(value="")
+              script(type="text/javascript").
+                setRegions(this);
+            | Country» 
+            select(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)")
+            | City/State» 
+            select(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)")
+          #txtregion
+          #txtplacename
+        div
+        div
+          input.btn(type='submit' value='Sign up')
