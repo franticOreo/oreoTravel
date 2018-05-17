@@ -71,19 +71,24 @@ block content
           label.creds Title
         div
           input.creds(type='text' name='title' placeholder='Tripping' required='')
-        div#destinationSelector
-          | Region» 
-          select(onchange="set_country(this,country,city_state)" size="1" name="region")
+        div
+          label.creds Region
+        div
+          select.creds(onchange="set_country(this,country,city_state)" size="1" name="region" required='')
             option(value="" selected="selected") SELECT REGION
             option(value="")
             script(type="text/javascript").
               setRegions(this);
-          | Country» 
-          select(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)")
-          | City/State» 
-          select(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)")
-          #txtregion
-          #txtplacename
+        div
+          label.creds Country
+        div
+          select.creds(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)" required='')
+        div
+          label.creds City/State
+        div
+          select.creds(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)" required='')
+        #txtregion
+        #txtplacename
         div
         div
           input.btn(type='submit' value='Sign up')
