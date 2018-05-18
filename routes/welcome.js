@@ -8,13 +8,15 @@ router.get('/', function(req, res, next) {
   if(!req.session.userId){
     var err = new Error('You are not authorised to be here matey');
     err.status = 403; // 403 is a forbidden HTTP status code
-    return next(err)
+    //return next(err)
+    return res.redirect('/'); // Redirect User to login rather than display error
   }
   // retrieve user data from mongo using session id
   User.findById(req.session.userId)
     .exec(function (error, user) {
       if (error) {
-        return next(error)
+        //return next(err)
+        return res.redirect('/'); // Redirect User to login rather than display error
       } else { //display user info on dash
         res.render('dash', {title: 'Oreo Travel' ,firstName:user.firstName, lastName:user.lastName , intro:'Get Started by Finding Users and then adding tasks'
             });
