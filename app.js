@@ -80,5 +80,19 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.get('/getData', function (req, res) {
+  db.open(function (err, db) {
+      assert.equal(null, err);
+      var cursor = db.collection(TripSchema).find().limit(1).sort({ $natural: -1 });
+      cursor.each(function (err, doc) {
+          assert.equal(err, null);
+          if (doc != null) {
+              res.status(200).json(doc);
+              return;
+          }
+      });
+  });
+});
+
 
 module.exports = app;
