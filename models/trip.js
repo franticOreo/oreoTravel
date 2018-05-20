@@ -4,9 +4,17 @@ var mongoose = require('mongoose');
 
 var TripSchema = new mongoose.Schema(
     {
-        title:String,
+        title: String,
+        description: String,
         region: String,
-
+        country: {
+            type: String,
+            required: false
+        },
+        city: {
+            type: String,
+            required: false
+        }
     }
 );
 

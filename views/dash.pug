@@ -4,6 +4,8 @@ block content
   link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   script(src='javascripts/main.js')
   script(src='javascripts/city_state.js')
+  script(src='javascripts/angular.min.js')
+  script(scr='javascripts/load_trips.js')
   nav.paper
     div
       h2.sideInfo #{title}
@@ -21,6 +23,7 @@ block content
         label.sideInfo #{intro}
       if tripName
         label.sideInfo #{tripName}
+      render-dynamic-table
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper

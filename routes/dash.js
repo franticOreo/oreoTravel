@@ -53,7 +53,9 @@ router.get('/', function(req, res, next) {
 router.post('/addtrip', function(req, res, next) {
   new Trip({
     title: req.body.tripName,
-    region: req.body.region
+    region: req.body.region,
+    country: req.body.country,
+    city: req.body.city_state
   }).save(function (err, trip, count) {
     if (err) {
       return err;
