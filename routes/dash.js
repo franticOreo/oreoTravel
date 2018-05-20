@@ -38,12 +38,13 @@ router.get('/', function(req, res, next) {
     err.status = 403;
     return next(err);
   }
+
   User.findById(req.session.userId)
     .exec(function (error, user) {
       if (error) {
         return next(error);
       } else {
-        return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+        return res.render('dash', {title: 'Logged In', tripName:user.trips, firstName: user.firstName, lastName:user.lastName});
       }
     });
 });
