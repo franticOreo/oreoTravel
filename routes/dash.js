@@ -17,7 +17,7 @@ router.post('/', function (req, res, next) {
         err.status = 401;
         return next(err);
       } else {
-        req.session.userId = user._id; // create session
+        req.session.userId = user._id; // create session with mongo user id
         return res.redirect('/dash');
       }
     });
@@ -32,38 +32,91 @@ router.post('/', function (req, res, next) {
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
+//
 router.get('/', function(req, res, next) {
-  if (! req.session.userId) {
-    var err = new Error('You are not authorised to see this page.');
-    err.status = 403;
-    return next(err);
-  }
+  //
+  //  REMOVED FOR TESTING
+  // if (! req.session.userId) {
+  //   var err = new Error('You are not authorised to see this page.');
+  //   err.status = 403;
+  //   return next(err);
+  // }
 
   User.findById(req.session.userId)
     .exec(function (error, user) {
       if (error) {
         return next(error);
       } else {
-        return res.render('dash', {title: 'Logged In', tripName:user.trips, firstName: user.firstName, lastName:user.lastName});
+
+        // if user has trip render dash with trips
+        if (user.trips.length != 0) {
+          return res.render('dash', {title: 'Logged In', tripName:user.trips, firstName: user.firstName, lastName:user.lastName});
+
+        } else {
+          console.log('no trips')
+          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+        }
+
       }
     });
 });
 
 
+// update user schema by embedding trip schema(?) inside
 router.post('/addtrip', function(req, res, next) {
-  new Trip({
+  var newTrip = {
     title: req.body.tripName,
     region: req.body.region,
     country: req.body.country,
     city: req.body.city_state
-  }).save(function (err, trip, count) {
-    if (err) {
-      return err;
-  } else {
-    res.redirect('/dash');
   }
+  // pushes new trip to the empty array in User schema
+  User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
+  function(err, data) {
+    if (err) {
+      res.status = 500;
+      res.render('error', {
+        message: err.message
+      });
+    } else {
+      console.log(data,'saved');
+      res.redirect('/dash')
+    }
+  })
+
 });
-});
+
+// make routes for each destination to show select tasks
+// the route parameter will be the id of the destination
+// the post request will come from links in the destination list
+// it will use dash view with objects from the task object inside project object
+router.get('/:tripId', function(req, res, next) {
+  // render tasks in this specific destination
+
+  res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
+})
+
+
+// router.post('/addtask', function(req, res, next) {
+//   var newTrip = {
+//     taskName: req.body.taskName,
+//     taskDescription: req.body.taskDescription
+//   }
+//   // pushes new trip to the empty array in User schema
+//   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
+//   function(err, data) {
+//     if (err) {
+//       res.status = 500;
+//       res.render('error', {
+//         message: err.message
+//       });
+//     } else {
+//       console.log(data,'saved');
+//       res.redirect('/dash')
+//     }
+//   })
+//
+// });
 
 
 

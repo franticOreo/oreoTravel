@@ -2,10 +2,10 @@ extends layout
 
 block content
   link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
-  script(src='javascripts/main.js')
-  script(src='javascripts/city_state.js')
-  script(src='javascripts/angular.min.js')
-  script(scr='javascripts/load_trips.js')
+  script(src='/javascripts/main.js')
+  script(src='/javascripts/city_state.js')
+  script(src='/javascripts/angular.min.js')
+  script(scr='/javascripts/load_trips.js')
   nav.paper
     div
       h2.sideInfo #{title}
@@ -22,7 +22,11 @@ block content
       if intro
         label.sideInfo #{intro}
       if tripName
-        label.sideInfo #{tripName}
+        h4.sideInfo Destinations
+        each name in tripName
+          li.label.sideInfo #[a(href='/dash/' + name.title) #{name.title}]
+            //- h5.sideInfo=name.title
+        
       render-dynamic-table
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')

@@ -1,8 +1,23 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt')
-var Trip = require('./trip.js')
+var TripSchema = require('./trip.js')
 
+// var TripSchema = new mongoose.Schema(
+//     {
+//         title: String,
+//         description: String,
+//         region: String,
+//         country: {
+//             type: String,
+//             required: false
+//         },
+//         city: {
+//             type: String,
+//             required: false
+//         }
+//     }
+// );
 
 
 var UserSchema = new mongoose.Schema({
@@ -32,9 +47,11 @@ var UserSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  trips: [{type: Schema.Types.ObjectId, ref: 'Trip'}]
+  trips: [TripSchema]
 
 });
+
+
 
 
 // authenticate input against db docs
