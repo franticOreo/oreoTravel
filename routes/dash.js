@@ -48,9 +48,12 @@ router.get('/', function(req, res, next) {
         return next(error);
       } else {
 
+
+
         // if user has trip render dash with trips
         if (user.trips.length != 0) {
-          return res.render('dash', {title: 'Logged In', tripName:user.trips, firstName: user.firstName, lastName:user.lastName});
+          //
+          return res.render('dash', {title: 'Logged In', tripName:{user.trips}, firstName: user.firstName, lastName:user.lastName});
 
         } else {
           console.log('no trips')
@@ -62,16 +65,15 @@ router.get('/', function(req, res, next) {
 });
 
 
-// update user schema by embedding trip schema(?) inside
+// update trip with trip details
+// how to tell parent which children are there own?
 router.post('/addtrip', function(req, res, next) {
-  var newTrip = {
-    title: req.body.tripName,
-    region: req.body.region,
-    country: req.body.country,
-    city: req.body.city_state
-  }
-  // pushes new trip to the empty array in User schema
-  User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
+  // pushes new trip to Trip array
+
+  Trip.create({users:req.session.userId, title: req.body.tripName,
+      region: req.body.region,
+      country: req.body.country,
+      city: req.body.city_state},
   function(err, data) {
     if (err) {
       res.status = 500;
@@ -79,28 +81,35 @@ router.post('/addtrip', function(req, res, next) {
         message: err.message
       });
     } else {
-      console.log(data,'saved');
-      res.redirect('/dash')
-    }
-  })
+      // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
+      var tripId = data._id;
+      User.update({_id:req.session.userId}, {$push: {trips: tripId}},
+        function(err, data) {
+          if (err) {
+            res.status = 500;
+            res.render('error', {
+              message: err.message
+            });
+          } else {
+            console.log(data, 'saved');
+            res.redirect('/dash')
+          }
+      // res.redirect('/dash')
+      })
+      }
+
 
 });
 
-// make routes for each destination to show select tasks
-// the route parameter will be the id of the destination
-// the post request will come from links in the destination list
-// it will use dash view with objects from the task object inside project object
-router.get('/:tripId', function(req, res, next) {
-  // render tasks in this specific destination
+});
 
-  res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
-})
-
-
-// router.post('/addtask', function(req, res, next) {
+// // update user schema by embedding trip schema(?) inside
+// router.post('/addtrip', function(req, res, next) {
 //   var newTrip = {
-//     taskName: req.body.taskName,
-//     taskDescription: req.body.taskDescription
+//     title: req.body.tripName,
+//     region: req.body.region,
+//     country: req.body.country,
+//     city: req.body.city_state
 //   }
 //   // pushes new trip to the empty array in User schema
 //   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
@@ -117,6 +126,27 @@ router.get('/:tripId', function(req, res, next) {
 //   })
 //
 // });
+
+// make routes for each destination to show select tasks
+// the route parameter will be the id of the destination
+// the post request will come from links in the destination list
+// it will use dash view with objects from the task object inside project object
+// router.get('/:tripId', function(req, res, next) {
+//   // render tasks in this specific destination
+//   User.findById(req.session.userId).trips
+//   .exec(function (error, user) {
+//     if (error) {
+//       return next(error);
+//     } else {
+//       console.log(user)
+//     }
+//
+//   res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
+// })
+//
+// });
+
+
 
 
 
