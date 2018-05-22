@@ -29,25 +29,7 @@ router.post('/', function (req, res, next) {
   }
 });
 
-function loadProfile(req, res, next) {
-  return new Promise(function(resolve, reject) {
-    User.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) reject();
-      else {
-        // if user has trip render dash with trips
-        if (user.trips.length != 0) {
-          Trip.find({'users':[user]}, 'title', function(err, result) {
-            if (err) reject();
-            resolve(result);
-          });
-        } else { // Don't render trips
-          resolve([]);
-        }
-      }
-    });
-  });
-}
+
 
 // GET /Dash
 // Check if user is authenticated
@@ -124,24 +106,39 @@ router.post('/addtrip', function(req, res, next) {
 // it will use dash view with objects from the task object inside project object
 router.get('/:tripId', renderAll);
 
+function loadUser(userId) {
+  return new Promise((resolve, reject) => {
+    User.findById(userId)
+    .exec(function (error, user) {
+      if (error) throw error;
+      console.log(user)
+      resolve(user);
+    });
+  })
+}
+
+function loadTrips(user) {
+  // if user has trip render dash with trips
+  return new Promise((resolve, reject) => {
+    if (user.trips.length != 0) {
+      Trip.find({'users':[user]}, function(err, result) {
+        if (err) reject();
+        resolve(result);
+      });
+    }
+    else {
+      // Don't render trips
+      resolve([]);
+    }
+  })
+}
+
 async function renderAll(req, res, next) {
-  // render tasks in this specific destination
-  // User.findById(req.session.userId).trips
-  // .exec(function (error, user) {
-  //   if (error) {
-  //     return next(error);
-  //   } else {
-  //     console.log(user)
-  //   }
-  var tripTitles = await loadProfile(req, res, next);
+  
+  var user = await loadUser(req.session.userId);
+  var tripTitles = await loadTrips(user);
 
   return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
 }
-
-// });
-
-
-
-
 
 module.exports = router
