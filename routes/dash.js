@@ -52,8 +52,22 @@ router.get('/', function(req, res, next) {
 
         // if user has trip render dash with trips
         if (user.trips.length != 0) {
-          //
-          return res.render('dash', {title: 'Logged In', tripName:{user.trips}, firstName: user.firstName, lastName:user.lastName});
+          tripTitles = []
+          for (var i = 0; i < user.trips.length; i++) {
+            Trip.findById(user.trips[i])
+            .exec(function (err, trip) {
+              if (error) {
+                return next(error);
+              } else {
+                tripTitles.push(trip.title)
+              }
+            })
+          }
+          console.log(tripTitles)
+
+          // console.log(user.trips)
+          // tripName:{user.trips},
+          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
 
         } else {
           console.log('no trips')
