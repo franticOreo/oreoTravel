@@ -43,31 +43,45 @@ router.get('/', function(req, res, next) {
   // }
 
   User.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } 
-      else {
-        // if user has trip render dash with trips
-        if (user.trips.length != 0) {
-          
-          Trip.find({'users':[user]}, 'title', function(err, result) {
-            if (err) throw err;
-            //tripNames.push(result['title']);
-            console.log(result);
-            return res.render('dash', {title: 'Logged In', tripName: result, firstName: user.firstName, lastName:user.lastName});
-          });
-          
-          //return res.render('dash', {title: 'Logged In', tripName: tripNames, firstName: user.firstName, lastName:user.lastName});
+    .exec(function (err, user) {
+      if (err) {
+        return next(err);
+      } else {
 
-        } else {
-          console.log('no trips')
-          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+
+          console.log(user)
+          // if user has trip render dash with trips
+          if (true) {
+            console.log(user.trips)
+
+            Trip.findUserTrips(req.session.userId, user.trips, function(err, tripNames) {
+              if (err) {
+                res.status = 500;
+                res.render('error', {
+                  message: err.message
+                });
+              }
+              else {
+                console.log("foundtrips:",tripNames)
+                return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+
+
+              }
+            })
+
+          }
+
+
+          else {
+            console.log('no trips')
+            return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+
+          }
+
         }
 
-      }
+      });
     });
-});
 
 
 // update trip with trip details
@@ -99,7 +113,6 @@ router.post('/addtrip', function(req, res, next) {
             console.log(data, 'saved');
             res.redirect('/dash')
           }
-      // res.redirect('/dash')
       })
       }
 

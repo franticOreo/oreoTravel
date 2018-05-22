@@ -46,28 +46,19 @@ router.get('/', function(req, res, next) {
     .exec(function (error, user) {
       if (error) {
         return next(error);
-      } else {
-
-
-
+      }
+      else {
         // if user has trip render dash with trips
         if (user.trips.length != 0) {
-          tripTitles = []
-          for (var i = 0; i < user.trips.length; i++) {
-            Trip.findById(user.trips[i])
-            .exec(function (err, trip) {
-              if (error) {
-                return next(error);
-              } else {
-                tripTitles.push(trip.title)
-              }
-            })
-          }
-          console.log(tripTitles)
 
-          // console.log(user.trips)
-          // tripName:{user.trips},
-          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+          Trip.find({'users':[user]}, 'title', function(err, result) {
+            if (err) throw err;
+            //tripNames.push(result['title']);
+            console.log(result);
+            return res.render('dash', {title: 'Logged In', tripName: result, firstName: user.firstName, lastName:user.lastName});
+          });
+
+          //return res.render('dash', {title: 'Logged In', tripName: tripNames, firstName: user.firstName, lastName:user.lastName});
 
         } else {
           console.log('no trips')
@@ -117,29 +108,6 @@ router.post('/addtrip', function(req, res, next) {
 
 });
 
-// // update user schema by embedding trip schema(?) inside
-// router.post('/addtrip', function(req, res, next) {
-//   var newTrip = {
-//     title: req.body.tripName,
-//     region: req.body.region,
-//     country: req.body.country,
-//     city: req.body.city_state
-//   }
-//   // pushes new trip to the empty array in User schema
-//   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
-//   function(err, data) {
-//     if (err) {
-//       res.status = 500;
-//       res.render('error', {
-//         message: err.message
-//       });
-//     } else {
-//       console.log(data,'saved');
-//       res.redirect('/dash')
-//     }
-//   })
-//
-// });
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination

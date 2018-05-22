@@ -1,9 +1,8 @@
 var mongoose = require('mongoose');
 var TaskSchema = require('./task')
 var Schema = mongoose.Schema;
-var TripSchema = require('./user.js')
+var UserSchema = require('./user.js')
 
-//  NOT USED ATM ONLY USED IF USING REFERENCE
 
 var TripSchema = new mongoose.Schema(
     {
@@ -22,6 +21,21 @@ var TripSchema = new mongoose.Schema(
         }
     }
 );
+
+// ////// NOT WORKING
+// TripSchema.statics.findUserTrips = function findUserTrips(userId, tripIds, callback) {
+//     var tripTitles = [];
+//     for (var i = 0; i < tripIds.length; i++) {
+//       Trip.find(_id:tripIds[i], function (err, trip) {
+//         if (err) {
+//           return next(err);
+//         } else {
+//           tripTitles.push(trip.title)
+//         }
+//       })
+//     } callback();
+//     // console.log(tripTitles)
+// }
 
 
 var Trip = mongoose.model('Trip', TripSchema); // creates model name and points to schema
