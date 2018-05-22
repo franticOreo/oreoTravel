@@ -29,31 +29,6 @@ router.post('/', function (req, res, next) {
   }
 });
 
-function getProfile(req, res, next) {
-  User.find(_id: req.session.userId, function (error, user) {
-      if (error) {
-        return next(error);
-      }
-      else {
-        // if user has trip render dash with trips
-        if (user.trips.length != 0) {
-
-          Trip.find({'users':[user]}, 'title', function(err, result) {
-            if (err) throw err;
-            //tripNames.push(result['title']);
-            console.log(result);
-            return res.render('dash', {title: 'Logged In', tripName: result, firstName: user.firstName, lastName:user.lastName});
-          });
-
-        } else {
-          console.log('no trips')
-          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
-          }
-
-      }
-    });
-}
-
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
@@ -67,7 +42,40 @@ router.get('/', function(req, res, next) {
   //   return next(err);
   // }
 
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
 
+
+
+        // if user has trip render dash with trips
+        if (user.trips.length != 0) {
+          tripTitles = []
+          for (var i = 0; i < user.trips.length; i++) {
+            Trip.findById(user.trips[i])
+            .exec(function (err, trip) {
+              if (error) {
+                return next(error);
+              } else {
+                tripTitles.push(trip.title)
+              }
+            })
+          }
+          console.log(tripTitles)
+
+          // console.log(user.trips)
+          // tripName:{user.trips},
+          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+
+        } else {
+          console.log('no trips')
+          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
+        }
+
+      }
+    });
 });
 
 
@@ -109,29 +117,48 @@ router.post('/addtrip', function(req, res, next) {
 
 });
 
+// // update user schema by embedding trip schema(?) inside
+// router.post('/addtrip', function(req, res, next) {
+//   var newTrip = {
+//     title: req.body.tripName,
+//     region: req.body.region,
+//     country: req.body.country,
+//     city: req.body.city_state
+//   }
+//   // pushes new trip to the empty array in User schema
+//   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
+//   function(err, data) {
+//     if (err) {
+//       res.status = 500;
+//       res.render('error', {
+//         message: err.message
+//       });
+//     } else {
+//       console.log(data,'saved');
+//       res.redirect('/dash')
+//     }
+//   })
+//
+// });
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
-router.get('/:tripId', function(req, res, next) {
-  // render tasks in this specific destination
-  // User.findById(req.session.userId).trips
-  // .exec(function (error, user) {
-  //   if (error) {
-  //     return next(error);
-  //   } else {
-  //     console.log(user)
-  //   }
-  console.log(req.params)
-
-  // Find tripId with re
-
-
-  res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
-})
-
-
+// router.get('/:tripId', function(req, res, next) {
+//   // render tasks in this specific destination
+//   User.findById(req.session.userId).trips
+//   .exec(function (error, user) {
+//     if (error) {
+//       return next(error);
+//     } else {
+//       console.log(user)
+//     }
+//
+//   res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
+// })
+//
+// });
 
 
 
