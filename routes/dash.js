@@ -49,8 +49,6 @@ function loadProfile(req, res, next) {
   });
 }
 
-function 
-
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
