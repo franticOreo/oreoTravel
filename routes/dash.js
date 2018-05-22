@@ -29,17 +29,6 @@ router.post('/', function (req, res, next) {
   }
 });
 
-<<<<<<< HEAD
-function getProfile(req, res, next) {
-  User.find(_id: req.session.userId, function (error, user) {
-      if (error) {
-        return next(error);
-      }
-      else {
-        // if user has trip render dash with trips
-        if (user.trips.length != 0) {
-
-=======
 function loadProfile(req, res, next) {
   return new Promise(function(resolve, reject) {
     User.findById(req.session.userId)
@@ -48,49 +37,25 @@ function loadProfile(req, res, next) {
       else {
         // if user has trip render dash with trips
         if (user.trips.length != 0) {
->>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
           Trip.find({'users':[user]}, 'title', function(err, result) {
             if (err) reject();
             resolve(result);
           });
-<<<<<<< HEAD
-
-        } else {
-          console.log('no trips')
-          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
-          }
-
-      }
-    });
-=======
         } else { // Don't render trips
           resolve([]);
         }
       }
     });
   });
->>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 }
+
+function 
 
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
 //
-<<<<<<< HEAD
-router.get('/', function(req, res, next) {
-  //
-  //  REMOVED FOR TESTING
-  // if (! req.session.userId) {
-  //   var err = new Error('You are not authorised to see this page.');
-  //   err.status = 403;
-  //   return next(err);
-  // }
-
-
-});
-=======
 router.get('/', renderAll);
->>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 
 
 // update trip with trip details
@@ -131,46 +96,51 @@ router.post('/addtrip', function(req, res, next) {
 
 });
 
+// // update user schema by embedding trip schema(?) inside
+// router.post('/addtrip', function(req, res, next) {
+//   var newTrip = {
+//     title: req.body.tripName,
+//     region: req.body.region,
+//     country: req.body.country,
+//     city: req.body.city_state
+//   }
+//   // pushes new trip to the empty array in User schema
+//   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
+//   function(err, data) {
+//     if (err) {
+//       res.status = 500;
+//       res.render('error', {
+//         message: err.message
+//       });
+//     } else {
+//       console.log(data,'saved');
+//       res.redirect('/dash')
+//     }
+//   })
+//
+// });
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
-<<<<<<< HEAD
-router.get('/:tripId', function(req, res, next) {
-  // render tasks in this specific destination
-=======
-router.get('/:tripId', renderAll)
+router.get('/:tripId', renderAll);
 
 async function renderAll(req, res, next) {
-   // render tasks in this specific destination
->>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
+  // render tasks in this specific destination
   // User.findById(req.session.userId).trips
   // .exec(function (error, user) {
   //   if (error) {
   //     return next(error);
   //   } else {
   //     console.log(user)
-<<<<<<< HEAD
   //   }
-  console.log(req.params)
-
-  // Find tripId with re
-
-
-  res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
-})
-
-
-=======
-  //   } 
   var tripTitles = await loadProfile(req, res, next);
 
   return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
 }
 
 // });
->>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 
 
 
