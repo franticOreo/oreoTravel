@@ -29,45 +29,31 @@ router.post('/', function (req, res, next) {
   }
 });
 
+function loadProfile(req, res, next) {
+  return new Promise(function(resolve, reject) {
+    User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) reject();
+      else {
+        // if user has trip render dash with trips
+        if (user.trips.length != 0) {
+          Trip.find({'users':[user]}, 'title', function(err, result) {
+            if (err) reject();
+            resolve(result);
+          });
+        } else { // Don't render trips
+          resolve([]);
+        }
+      }
+    });
+  });
+}
+
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
 //
-router.get('/', function(req, res, next) {
-  //
-  //  REMOVED FOR TESTING
-  // if (! req.session.userId) {
-  //   var err = new Error('You are not authorised to see this page.');
-  //   err.status = 403;
-  //   return next(err);
-  // }
-
-  User.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } 
-      else {
-        // if user has trip render dash with trips
-        if (user.trips.length != 0) {
-          
-          Trip.find({'users':[user]}, 'title', function(err, result) {
-            if (err) throw err;
-            //tripNames.push(result['title']);
-            console.log(result);
-            return res.render('dash', {title: 'Logged In', tripName: result, firstName: user.firstName, lastName:user.lastName});
-          });
-          
-          //return res.render('dash', {title: 'Logged In', tripName: tripNames, firstName: user.firstName, lastName:user.lastName});
-
-        } else {
-          console.log('no trips')
-          return res.render('dash', {title: 'Logged In', firstName: user.firstName, lastName:user.lastName});
-        }
-
-      }
-    });
-});
+router.get('/', renderAll);
 
 
 // update trip with trip details
@@ -136,19 +122,22 @@ router.post('/addtrip', function(req, res, next) {
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
-// router.get('/:tripId', function(req, res, next) {
-//   // render tasks in this specific destination
-//   User.findById(req.session.userId).trips
-//   .exec(function (error, user) {
-//     if (error) {
-//       return next(error);
-//     } else {
-//       console.log(user)
-//     }
-//
-//   res.render('dash', {title: 'Logged In', firstName: 'da', lastName: 've'})
-// })
-//
+router.get('/:tripId', renderAll)
+
+async function renderAll(req, res, next) {
+   // render tasks in this specific destination
+  // User.findById(req.session.userId).trips
+  // .exec(function (error, user) {
+  //   if (error) {
+  //     return next(error);
+  //   } else {
+  //     console.log(user)
+  //   } 
+  var tripTitles = await loadProfile(req, res, next);
+
+  return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
+}
+
 // });
 
 
