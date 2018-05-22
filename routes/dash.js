@@ -29,6 +29,7 @@ router.post('/', function (req, res, next) {
   }
 });
 
+<<<<<<< HEAD
 function getProfile(req, res, next) {
   User.find(_id: req.session.userId, function (error, user) {
       if (error) {
@@ -38,12 +39,21 @@ function getProfile(req, res, next) {
         // if user has trip render dash with trips
         if (user.trips.length != 0) {
 
+=======
+function loadProfile(req, res, next) {
+  return new Promise(function(resolve, reject) {
+    User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) reject();
+      else {
+        // if user has trip render dash with trips
+        if (user.trips.length != 0) {
+>>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
           Trip.find({'users':[user]}, 'title', function(err, result) {
-            if (err) throw err;
-            //tripNames.push(result['title']);
-            console.log(result);
-            return res.render('dash', {title: 'Logged In', tripName: result, firstName: user.firstName, lastName:user.lastName});
+            if (err) reject();
+            resolve(result);
           });
+<<<<<<< HEAD
 
         } else {
           console.log('no trips')
@@ -52,12 +62,21 @@ function getProfile(req, res, next) {
 
       }
     });
+=======
+        } else { // Don't render trips
+          resolve([]);
+        }
+      }
+    });
+  });
+>>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 }
 
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
 //
+<<<<<<< HEAD
 router.get('/', function(req, res, next) {
   //
   //  REMOVED FOR TESTING
@@ -69,6 +88,9 @@ router.get('/', function(req, res, next) {
 
 
 });
+=======
+router.get('/', renderAll);
+>>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 
 
 // update trip with trip details
@@ -114,14 +136,22 @@ router.post('/addtrip', function(req, res, next) {
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
+<<<<<<< HEAD
 router.get('/:tripId', function(req, res, next) {
   // render tasks in this specific destination
+=======
+router.get('/:tripId', renderAll)
+
+async function renderAll(req, res, next) {
+   // render tasks in this specific destination
+>>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
   // User.findById(req.session.userId).trips
   // .exec(function (error, user) {
   //   if (error) {
   //     return next(error);
   //   } else {
   //     console.log(user)
+<<<<<<< HEAD
   //   }
   console.log(req.params)
 
@@ -132,6 +162,15 @@ router.get('/:tripId', function(req, res, next) {
 })
 
 
+=======
+  //   } 
+  var tripTitles = await loadProfile(req, res, next);
+
+  return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
+}
+
+// });
+>>>>>>> 8430b3e47fab7b3e28cfb75be7d7663442ba6c74
 
 
 
