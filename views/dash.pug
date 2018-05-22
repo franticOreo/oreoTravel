@@ -22,7 +22,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each name in tripName
-          li.label.sideInfo #[a(href='/dash/' + name) #{name}]
+          li.label.sideInfo #[a(href='/dash/' + name.title) #{name.title}]
             //- h5.sideInfo=name.title
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
