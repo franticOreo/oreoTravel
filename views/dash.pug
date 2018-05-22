@@ -6,7 +6,7 @@ block content
   script(src='/javascripts/city_state.js')
   nav.paper
     div
-      h2.sideInfo #{title}
+      .sideInfo #{title}
     div#profile.invert2
       div
         label Welcome #{firstName} #{lastName}
@@ -22,7 +22,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each name in tripName
-          li.label.sideInfo #[a(href='/dash/' + name.title) #{name.title}]
+          li.label.sideInfo #[a(href='/dash/' + name._id) #{name.title}]
             //- h5.sideInfo=name.title
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
@@ -56,7 +56,9 @@ block content
         br
         select#newTaskAssign.flat
       .wideGrid
-        input.btnEmbed(type='button' value='Add Task' onclick='addTask(this);')
+        input.btnEmbed(type='submit' value='Add Task' onclick='addTask(this);')
+  div
+    h2 Tasks: #{tasks}
   #infoBar.paper
     label#taskCount.info
     label#tasksRemain.info

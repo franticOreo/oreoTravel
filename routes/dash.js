@@ -3,12 +3,10 @@ var router = express.Router();
 var User = require('../models/user');
 var Trip = require('../models/trip');
 
-
 // POST login
 // When User Logins In from index
 // Check for correct credentials
 // if correct create a session ID with userID from mongo
-//
 router.post('/', function (req, res, next) {
   if (req.body.email && req.body.password) {
     User.authenticate(req.body.email, req.body.password, function(error, user) {
@@ -21,7 +19,6 @@ router.post('/', function (req, res, next) {
         return res.redirect('/dash');
       }
     });
-
   } else {
     var err = new Error('Email and password required')
     err.status = 400;
@@ -29,14 +26,16 @@ router.post('/', function (req, res, next) {
   }
 });
 
-
-
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
-//
 router.get('/', renderAll);
 
+// make routes for each destination to show select tasks
+// the route parameter will be the id of the destination
+// the post request will come from links in the destination list
+// it will use dash view with objects from the task object inside project object
+router.get('/:tripId', renderAll);
 
 // update trip with trip details
 // how to tell parent which children are there own?
@@ -69,12 +68,70 @@ router.post('/addtrip', function(req, res, next) {
           }
       // res.redirect('/dash')
       })
+    }
+  });
+});
+
+//
+// Loading data and rendering functions
+//
+
+function loadUser(userId) {
+  return new Promise((resolve, reject) => {
+    User.findById(userId)
+    .exec(function (error, user) {
+      if (error) throw error;
+      resolve(user);
+    });
+  })
+}
+
+function loadTrips(user) {
+  // if user has trip render dash with trips
+  return new Promise((resolve, reject) => {
+    if (user.trips.length != 0) {
+      Trip.find({'users':[user]}, function(err, result) {
+        if (err) reject();
+        resolve(result);
+      });
+    }
+    else {
+      // Don't render trips
+      resolve([]);
+    }
+  })
+}
+
+async function renderAll(req, res, next) {
+
+  // Load in user and trip data
+  var user = await loadUser(req.session.userId);
+  var trips = await loadTrips(user);
+
+  // Get the list of tasks corresponding to the id
+  var taskList = [];
+  if (req.params['tripId']) {
+    var tripId = req.params['tripId'];
+    for (var i = 0; i < trips.length; i++) {
+      if (trips[i]._id = tripId) {
+        taskList = trips[i].tasks;
       }
+    }
+  }
 
+  console.log(taskList);
 
-});
+  // Render
+  return res.render('dash', {
+    title: 'Logged In', 
+    tripName: trips, 
+    firstName: user.firstName, 
+    lastName: user.lastName,
+    tasks: taskList
+  });
+}
 
-});
+module.exports = router
 
 // // update user schema by embedding trip schema(?) inside
 // router.post('/addtrip', function(req, res, next) {
@@ -104,41 +161,3 @@ router.post('/addtrip', function(req, res, next) {
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
-router.get('/:tripId', renderAll);
-
-function loadUser(userId) {
-  return new Promise((resolve, reject) => {
-    User.findById(userId)
-    .exec(function (error, user) {
-      if (error) throw error;
-      console.log(user)
-      resolve(user);
-    });
-  })
-}
-
-function loadTrips(user) {
-  // if user has trip render dash with trips
-  return new Promise((resolve, reject) => {
-    if (user.trips.length != 0) {
-      Trip.find({'users':[user]}, function(err, result) {
-        if (err) reject();
-        resolve(result);
-      });
-    }
-    else {
-      // Don't render trips
-      resolve([]);
-    }
-  })
-}
-
-async function renderAll(req, res, next) {
-  
-  var user = await loadUser(req.session.userId);
-  var tripTitles = await loadTrips(user);
-
-  return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
-}
-
-module.exports = router
