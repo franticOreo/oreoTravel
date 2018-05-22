@@ -35,26 +35,26 @@ block content
       option(value='2') Assignment
       option(value='3') Done
   #main
-    form#newTask.paper(action='/addtask' method='POST')
+    form#newTask.paper(action='/dash/addtask/' + selectedTrip method='POST')
       .wideGrid
-        input#newTaskName.flatinput(type='text' name='taskName' placeholder='New Task')
+        input#newTaskName.flatinput(type='text' name='name' placeholder='New Task')
       .wideGrid
-        #newTaskDesc.flatinput(contenteditable='true' name='taskDescription' placeholder='Decription')
+        #newTaskDesc.flatinput(contenteditable='true' name='description' placeholder='Decription')
       div
-        label(for='newTaskDate' name='taskDate') Due Date
+        label(for='newTaskDate') Due Date
         br
-        input#newTaskDate.flat(type='date')
+        input#newTaskDate.flat(type='date' name='date')
       div
         label(for='newTaskPriority') Priority
         br
-        select#newTaskPriority.flat
+        select(name='priority')#newTaskPriority.flat
           option(value='0') High
           option(value='1' selected='selected') Medium
           option(value='2') Optional
       div
         label(for='newTaskAssign') Assign
         br
-        select#newTaskAssign.flat
+        select(name='assign')#newTaskAssign.flat
       .wideGrid
         input.btnEmbed(type='submit' value='Add Task' onclick='addTask(this);')
   div

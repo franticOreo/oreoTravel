@@ -1,16 +1,13 @@
 var mongoose = require('mongoose');
-var TripSchema = require('./trip.js')
+var Schema = mongoose.Schema;
+var TripSchema = require('./trip.js');
 
 var TaskSchema = new mongoose.Schema({
-  taskName: {
-    type: String
-
-  },
-  taskDescription: {
-    type: String
-  }
-
+  name: String,
+  description: String,
+  date: Date,
+  priority: Number,
+  assign: [{type: Schema.Types.ObjectId, ref: 'UserSchema' }],
 });
-
 
 module.exports = TaskSchema;

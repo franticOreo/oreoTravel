@@ -7,7 +7,7 @@ var Trip = require('../models/trip');
 // When User Logins In from index
 // Check for correct credentials
 // if correct create a session ID with userID from mongo
-router.post('/', function (req, res, next) {
+router.post('/', function(req, res, next) {
   if (req.body.email && req.body.password) {
     User.authenticate(req.body.email, req.body.password, function(error, user) {
       if (error || !user) {
@@ -72,6 +72,34 @@ router.post('/addtrip', function(req, res, next) {
   });
 });
 
+router.post('/addTask/:tripId', (req, res, next) => {
+  var b = req.body;
+  console.log(b);
+  Trip.update(
+    { _id: req.params.tripId },
+    {
+      $push: {
+        tasks: {
+          name: b.name,
+          description: b.description,
+          date: b.date,
+          priority: b.priority,
+          assign: [req.session.userId] // <-- Change this to selectable at some point
+        }
+      }
+    },
+    (err, data) => {
+      if (err) {
+        res.status = 500;
+        res.render('error', { message: err.message });
+      } else {
+        console.log(data);
+        res.redirect('/dash/' + req.params.tripId)
+      }
+    }
+  );
+});
+
 //
 // Loading data and rendering functions
 //
@@ -90,7 +118,7 @@ function loadTrips(user) {
   // if user has trip render dash with trips
   return new Promise((resolve, reject) => {
     if (user.trips.length != 0) {
-      Trip.find({'users':[user]}, function(err, result) {
+      Trip.find({'users':[user]}, (err, result) => {
         if (err) reject();
         resolve(result);
       });
@@ -111,23 +139,25 @@ async function renderAll(req, res, next) {
   // Get the list of tasks corresponding to the id
   var taskList = [];
   if (req.params['tripId']) {
-    var tripId = req.params['tripId'];
     for (var i = 0; i < trips.length; i++) {
-      if (trips[i]._id = tripId) {
+      if (trips[i]._id = req.params['tripId']) {
         taskList = trips[i].tasks;
       }
     }
   }
 
+  console.log(req.params['tripId']);
   console.log(taskList);
+  console.log(trips);
 
-  // Render
+  // Render - last
   return res.render('dash', {
     title: 'Logged In', 
     tripName: trips, 
     firstName: user.firstName, 
     lastName: user.lastName,
-    tasks: taskList
+    tasks: taskList,
+    selectedTrip: req.params['tripId']
   });
 }
 
