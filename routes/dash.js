@@ -39,7 +39,7 @@ function loadProfile(req, res, next) {
         if (user.trips.length != 0) {
           Trip.find({'users':[user]}, 'title', function(err, result) {
             if (err) reject();
-            resolve(result);
+            resolve({user, result});
           });
         } else { // Don't render trips
           resolve([]);
@@ -49,7 +49,7 @@ function loadProfile(req, res, next) {
   });
 }
 
-function 
+
 
 // GET /Dash
 // Check if user is authenticated
@@ -135,7 +135,10 @@ async function renderAll(req, res, next) {
   //   } else {
   //     console.log(user)
   //   }
+
+// get obj working
   var tripTitles = await loadProfile(req, res, next);
+  console.log(tripTitles)
 
   return res.render('dash', {title: 'Logged In', tripName: tripTitles, firstName: 'da', lastName: 've'});
 }
