@@ -45,16 +45,18 @@ function toggleNewTripDisplay(){
     e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
 }
 
+// --------------------------------------------------------------------------------------------------------
+
 var tasks = [];
 var idTick = 0;
 var people = ["Eric", "Gwin", "Tails"];
 
-function task(name, details, priority, time, assign){
-    this.id = idTick++;
+function task(name, details, priority, date, assign){
+    this._id = idTick++;
     this.name = name;
     this.details = details;
     this.priority = priority;
-    this.time = time;
+    this.date = date;
     this.assign = assign;
     this.done = false;
     return this;
@@ -72,6 +74,18 @@ function addTask(btn){
     createTaskElement(tasks[i - 1]);
 
     refreshTasks();
+}
+
+function getTasks(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            tasks = this.responseText;
+            refreshTasks();
+        }
+    };
+    xhttp.open("GET", "/dash/" + id, true);
+    xhttp.send();
 }
 
 // Create the elements that display a task
@@ -111,7 +125,7 @@ function createTaskElement(task){
     // Priority Label
     var priority = document.createElement("label");
     priority.classList.add("priority")
-    priority.innerHTML = dateToAussieString(task.time) + " - " + people[task.assign] + " - " + ["High", "Medium", "Optional"][task.priority];
+    priority.innerHTML = dateToAussieString(task.date) + " - " + people[task.assign] + " - " + ["High", "Medium", "Optional"][task.priority];
     bottomDiv.appendChild(priority);
 
     // Done Button
@@ -183,7 +197,7 @@ function deleteTaskBtnClick(){
 /* --- Task Sorting Functions --- */
 
 function compareTime(a, b){
-    return (a.done ? !b.done : b.done) ? (a.done ? 1 : -1) : (a.time > b.time ? -1 : a.time < b.time ? 1 : 0);
+    return (a.done ? !b.done : b.done) ? (a.done ? 1 : -1) : (a.date > b.date ? -1 : a.date < b.date ? 1 : 0);
 }
 
 function comparePriority(a, b){
