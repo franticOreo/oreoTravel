@@ -6,7 +6,7 @@ block content
   script(src='/javascripts/city_state.js')
   nav.paper
     div
-      h2.sideInfo #{title}
+      .sideInfo #{title}
     div#profile.invert2
       div
         label Welcome #{firstName} #{lastName}
@@ -22,7 +22,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each name in tripName
-          li.label.sideInfo #[a(href='/dash/' + name.title) #{name.title}]
+          li.label.sideInfo #[a(href='/dash/' + name._id) #{name.title}]
             //- h5.sideInfo=name.title
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
@@ -35,28 +35,30 @@ block content
       option(value='2') Assignment
       option(value='3') Done
   #main
-    form#newTask.paper(action='/addtask' method='POST')
+    form#newTask.paper(action='/dash/addtask/' + selectedTrip method='POST')
       .wideGrid
-        input#newTaskName.flatinput(type='text' name='taskName' placeholder='New Task')
+        input#newTaskName.flatinput(type='text' name='name' placeholder='New Task')
       .wideGrid
-        #newTaskDesc.flatinput(contenteditable='true' name='taskDescription' placeholder='Decription')
+        #newTaskDesc.flatinput(contenteditable='true' name='description' placeholder='Decription')
       div
-        label(for='newTaskDate' name='taskDate') Due Date
+        label(for='newTaskDate') Due Date
         br
-        input#newTaskDate.flat(type='date')
+        input#newTaskDate.flat(type='date' name='date')
       div
         label(for='newTaskPriority') Priority
         br
-        select#newTaskPriority.flat
+        select(name='priority')#newTaskPriority.flat
           option(value='0') High
           option(value='1' selected='selected') Medium
           option(value='2') Optional
       div
         label(for='newTaskAssign') Assign
         br
-        select#newTaskAssign.flat
+        select(name='assign')#newTaskAssign.flat
       .wideGrid
-        input.btnEmbed(type='button' value='Add Task' onclick='addTask(this);')
+        input.btnEmbed(type='submit' value='Add Task' onclick='addTask(this);')
+  div
+    h2 Tasks: #{tasks}
   #infoBar.paper
     label#taskCount.info
     label#tasksRemain.info
