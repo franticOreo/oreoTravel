@@ -4,7 +4,7 @@ block content
   meta(name='viewport' content='width=device-width, initial-scale=1')
   link(rel='stylesheet', href='stylesheets/main.css')
   script(src='javascripts/welcome.js')
-
+  script(src='/javascripts/city_state.js')
   // Main Menu
 
   #welcome
@@ -55,6 +55,21 @@ block content
           label.creds Expertise
         div
           input.creds(type='text' name='expertise' placeholder='Cheap flights etc...' required='')
+        div
+          label.creds Region
+        div
+          select.creds(onchange="set_country(this,country,city_state)" size="1" name="region" required='')
+            option(value="" selected="selected") SELECT REGION
+            script(type="text/javascript").
+              setRegions(this);
+        div
+          label.creds Country
+        div
+          select.creds(name="country" size="1" disabled="disabled" onchange="set_city_state(this,city_state)" required='')
+        div
+          label.creds City/State
+        div
+          select.creds(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)" required='')
         div
         div
           input.btn(type='submit' value='Sign up')
