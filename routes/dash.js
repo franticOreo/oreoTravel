@@ -110,7 +110,7 @@ router.post('/:tripId/addtask', (req, res, next) => {
 });
 
 router.get('/test/test', (req, res, next) => {
-  
+
   res.send("Hello, World!");
 })
 
@@ -169,13 +169,12 @@ async function renderAll(req, res, next) {
     }
   }
 
-<<<<<<< HEAD
+
   console.log(req.params['tripId']);
   console.log(taskList);
   // console.log(trips);
 
-=======
->>>>>>> 8bc10915c90041cf953556cc6c3b90517408cfe6
+
   // Render - last
   return res.render('dash', {
     title: 'Logged In',
