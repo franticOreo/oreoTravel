@@ -35,7 +35,14 @@ router.get('/', renderAll);
 // the route parameter will be the id of the destination
 // the post request will come from links in the destination list
 // it will use dash view with objects from the task object inside project object
-router.get('/:tripId', renderAll);
+router.get('/:tripId', getTasksResponse);
+
+async function getTasksResponse(req, res, next) {
+  var tasks = await loadTasks(req.params['tripId']);
+  console.log(tasks);
+  res.type('json');
+  res.send(tasks);
+}
 
 // update trip with trip details
 // how to tell parent which children are there own?
@@ -93,12 +100,16 @@ router.post('/addTask/:tripId', (req, res, next) => {
         res.status = 500;
         res.render('error', { message: err.message });
       } else {
-        console.log(data);
         res.redirect('/dash/' + req.params.tripId)
       }
     }
   );
 });
+
+router.get('/test/test', (req, res, next) => {
+  
+  res.send("Hello, World!");
+})
 
 //
 // Loading data and rendering functions
@@ -114,7 +125,7 @@ function loadUser(userId) {
   })
 }
 
-function loadTrips(user) {
+function loadTrips(user) { // <------------------ Find a way to not include tasks in this query
   // if user has trip render dash with trips
   return new Promise((resolve, reject) => {
     if (user.trips.length != 0) {
@@ -127,6 +138,15 @@ function loadTrips(user) {
       // Don't render trips
       resolve([]);
     }
+  })
+}
+
+function loadTasks(tripId) {
+  return new Promise((resolve, reject) => {
+    Trip.find({_id: tripId}, {tasks: 1}, (err, result) => {
+      if (err) reject();
+      resolve(result[0].tasks);
+    })
   })
 }
 
@@ -146,17 +166,12 @@ async function renderAll(req, res, next) {
     }
   }
 
-  console.log(req.params['tripId']);
-  console.log(taskList);
-  console.log(trips);
-
   // Render - last
   return res.render('dash', {
     title: 'Logged In', 
     tripName: trips, 
     firstName: user.firstName, 
     lastName: user.lastName,
-    tasks: taskList,
     selectedTrip: req.params['tripId']
   });
 }

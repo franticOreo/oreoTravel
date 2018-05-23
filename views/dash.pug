@@ -22,7 +22,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each name in tripName
-          li.label.sideInfo #[a(href='/dash/' + name._id) #{name.title}]
+          li(onclick='getTasks(\"' + name._id + '\");').label.sideInfo #{name.title}
             //- h5.sideInfo=name.title
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
@@ -57,8 +57,6 @@ block content
         select(name='assign')#newTaskAssign.flat
       .wideGrid
         input.btnEmbed(type='submit' value='Add Task' onclick='addTask(this);')
-  div
-    h2 Tasks: #{tasks}
   #infoBar.paper
     label#taskCount.info
     label#tasksRemain.info
