@@ -8,6 +8,7 @@ var TaskSchema = new mongoose.Schema({
   date: Date,
   priority: Number,
   assign: [{type: Schema.Types.ObjectId, ref: 'UserSchema' }],
+  done: Boolean
 });
 
 module.exports = TaskSchema;

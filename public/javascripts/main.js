@@ -50,11 +50,17 @@ function toggleNewTripDisplay(){
 var tasks = [];
 var idTick = 0;
 var people = ["Eric", "Gwin", "Tails"];
+var currentTripId;
 
-function task(name, details, priority, date, assign){
-    this._id = idTick++;
+function setCurrentTripId(id) {
+    currentTripId = id;
+
+}
+
+function task(name, description, priority, date, assign){
+    this._id = 0;
     this.name = name;
-    this.details = details;
+    this.description = description;
     this.priority = priority;
     this.date = date;
     this.assign = assign;
@@ -62,37 +68,46 @@ function task(name, details, priority, date, assign){
     return this;
 }
 
-function addTask(btn){
-    var i = tasks.push(new task(
+function addTask(id){
+    var t = new task(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
         document.getElementById("newTaskPriority").value,
         new Date(document.getElementById("newTaskDate").value),
         document.getElementById("newTaskAssign").value
-    ));
+    );
 
-    createTaskElement(tasks[i - 1]);
-
-    refreshTasks();
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTaskResponse;
+    xhttp.open("POST", "/dash/task/" + id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(JSON.stringify(t));
 }
 
 function getTasks(id) {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            tasks = JSON.parse(this.responseText);
-            refreshTasks();
-        }
-    };
-    xhttp.open("GET", "/dash/" + id, true);
+    xhttp.onreadystatechange = handleTaskResponse;
+    xhttp.open("GET", "/dash/task/" + id, true);
     xhttp.send();
+}
+
+function handleTaskResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        tasks = JSON.parse(this.responseText);
+        console.log(tasks);
+        for (var i = 0; i < tasks.length; i++) {
+            tasks[i].date = new Date(tasks[i].date);
+            createTaskElement(tasks[i]);
+        }
+        refreshTasks();
+    }
 }
 
 // Create the elements that display a task
 function createTaskElement(task){
     taskDiv = document.createElement("div");
     taskDiv.classList.add("task", "paper");
-    taskDiv.id = "task_" + task.id;
+    taskDiv.id = "task_" + task._id;
     var mainDiv = document.getElementById("main");
     
     mainDiv.appendChild(taskDiv);
@@ -149,12 +164,10 @@ function createTaskElement(task){
 
 // Reorder the tasks according to the dropbox
 function refreshTasks(){
-    console.log(document.getElementById("orderBy").value);
     tasks = tasks.sort([compareTime, comparePriority, compareAssignment, compareDone][document.getElementById("orderBy").value]);
-    console.log(tasks);
     var mainDiv = document.getElementById("main");
     tasks.forEach(t => {
-        mainDiv.appendChild(document.getElementById("task_" + t.id));
+        mainDiv.appendChild(document.getElementById("task_" + t._id));
     });
 
     i = 0;
@@ -217,7 +230,7 @@ function compareDone(a, b){
 /* --- Helpful Routines --- */
 
 function setTaskColor(task) {
-    document.getElementById("task_" + task.id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
+    document.getElementById("task_" + task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
 }
 
 // Inserts an element after a reference node.
