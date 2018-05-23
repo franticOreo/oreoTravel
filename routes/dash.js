@@ -29,6 +29,9 @@ router.post('/', function(req, res, next) {
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
+
+// return root of dash if user has no trip
+// else respond with first tripId root
 router.get('/', renderAll);
 
 // make routes for each destination to show select tasks
@@ -72,7 +75,7 @@ router.post('/addtrip', function(req, res, next) {
   });
 });
 
-router.post('/addTask/:tripId', (req, res, next) => {
+router.post('/:tripId/addtask', (req, res, next) => {
   var b = req.body;
   console.log(b);
   Trip.update(
@@ -148,7 +151,7 @@ async function renderAll(req, res, next) {
 
   console.log(req.params['tripId']);
   console.log(taskList);
-  console.log(trips);
+  // console.log(trips);
 
   // Render - last
   return res.render('dash', {
@@ -163,29 +166,7 @@ async function renderAll(req, res, next) {
 
 module.exports = router
 
-// // update user schema by embedding trip schema(?) inside
-// router.post('/addtrip', function(req, res, next) {
-//   var newTrip = {
-//     title: req.body.tripName,
-//     region: req.body.region,
-//     country: req.body.country,
-//     city: req.body.city_state
-//   }
-//   // pushes new trip to the empty array in User schema
-//   User.update({_id:req.session.userId}, {$push: {trips: newTrip}},
-//   function(err, data) {
-//     if (err) {
-//       res.status = 500;
-//       res.render('error', {
-//         message: err.message
-//       });
-//     } else {
-//       console.log(data,'saved');
-//       res.redirect('/dash')
-//     }
-//   })
-//
-// });
+
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination
