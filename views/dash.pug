@@ -21,8 +21,8 @@ block content
         label.sideInfo #{intro}
       if tripName
         h4.sideInfo Destinations
-        each name in tripName
-          li(onclick='getTasks(\"' + name._id + '\");').label.sideInfo #{name.title}
+        each trip in tripName
+          li(onclick='getTasks(\"' + trip._id + '\");').label.sideInfo #{trip.title}
             //- h5.sideInfo=name.title
       if friendsNames
         h4.sideInfo Friends
@@ -60,7 +60,10 @@ block content
         br
         select(name='assign')#newTaskAssign.flat
       .wideGrid
-        input.btnEmbed(type='submit' value='Add Task' onclick='addTask(this);')
+        if tripName[0]
+          input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask(\"' + tripName[0]._id + '\");')
+        else
+          input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask();')
   #infoBar.paper
     label#taskCount.info
     label#tasksRemain.info
@@ -94,9 +97,7 @@ block content
         div
           label.creds City/State
         div
-          select.creds(name="city_state" size="1" disabled="disabled" onchange="print_city_state(country,this)" required='')
-        #txtregion
-        #txtplacename
+          select.creds(name="city_state" size="1" disabled="disabled" required='')
         div
         div
           input.btn(type='submit' value='Sign up')
