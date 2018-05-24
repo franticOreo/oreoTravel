@@ -24,6 +24,10 @@ block content
         each name in tripName
           li(onclick='getTasks(\"' + name._id + '\");').label.sideInfo #{name.title}
             //- h5.sideInfo=name.title
+      if friendsNames
+        h4.sideInfo Friends
+        each friend in friendsNames
+          h4.sideInfo #{friend.firstName}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper

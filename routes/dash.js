@@ -16,6 +16,8 @@ router.post('/', function(req, res, next) {
         return next(err);
       } else {
         req.session.userId = user._id; // create session with mongo user id
+        req.session.prefferedDest = {region:user.region, country:user.country, city_state:user.city_state}
+
         return res.redirect('/dash');
       }
     });
@@ -25,6 +27,61 @@ router.post('/', function(req, res, next) {
     return next(err);
   }
 });
+
+
+
+
+
+function findUserFriends(destinationType, prefferredDest) {
+  return new Promise((resolve, reject) => {
+    User.find({destinationType: prefferredDest}, {firstName: 1, _id: 0},
+    (err, data) => {
+      if (err) reject(); // PROBS NEED BETTER ERROR HANDLER
+      resolve(data);
+
+      }
+    )
+
+  })
+}
+
+
+router.get('/search', function(req, res, next) {
+  // console.log(req.session.prefferedDest.city_state === "")
+
+  // { region , country , city_state}
+async  function SearchForFriends() {
+
+
+
+      if (req.session.prefferedDest.city_state === "") {
+          if (req.session.prefferedDest.country === "") {
+            req.session.dest = req.session.prefferedDest.region
+          }
+          else {
+            req.session.dest = req.session.prefferedDest.country
+          }
+      }
+      else {
+        req.session.dest = req.session.prefferedDest.city_state
+        // city state is not null so find through User Schema
+        var friendsNames = findUserFriends("city_state", req.session.prefferedDest.city_state)
+        res.render('dash', {friendsNames:friendsNames})
+          // var tasks = await loadTasks(req.params['tripId']);
+
+      }
+      console.log(req.session.dest)
+      // get users prefferred destination
+      // from UserSchema
+      // check if city_state empty if check country ...
+
+
+
+      // search through User Schema for Country > region
+
+}
+
+})
 
 // GET /Dash
 // Check if user is authenticated

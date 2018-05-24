@@ -62,6 +62,19 @@ var UserSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  region: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  country: {
+    type: String,
+    trim: true
+  },
+  city_state: {
+    type: String,
+    trim: true
+  },
   trips: [{type: Schema.Types.ObjectId, ref: 'TripSchema' }]
 
 });

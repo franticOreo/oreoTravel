@@ -34,7 +34,8 @@ router.post('/', function(req, res, next) {
       req.body.lastName,
       req.body.password,
       req.body.email,
-      req.body.expertise) { //if all fields entered in signup form
+      req.body.expertise,
+      req.body.region) { //if all fields entered in signup form
 
         // need to check for duplicate email
         //
@@ -43,7 +44,10 @@ router.post('/', function(req, res, next) {
       lastName: req.body.lastName,
       password: req.body.password,
       email: req.body.email,
-      expertise: req.body.expertise
+      expertise: req.body.expertise,
+      region: req.body.region,
+      country: req.body.country,
+      city_state: req.body.city_state
     }
 
     User.create(userData, function(error , user) { // use the mongoose model, users
