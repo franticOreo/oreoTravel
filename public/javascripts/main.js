@@ -68,7 +68,14 @@ function task(name, description, priority, date, assign){
     return this;
 }
 
-function addTask(id){
+function getTasks(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTaskResponse;
+    xhttp.open("GET", "/dash/task/" + id, true);
+    xhttp.send();
+}
+
+function addTask(id) {
     var t = new task(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
@@ -84,10 +91,10 @@ function addTask(id){
     xhttp.send(JSON.stringify(t));
 }
 
-function getTasks(id) {
+function deleteTask(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
-    xhttp.open("GET", "/dash/task/" + id, true);
+    xhttp.open("DELETE", "/dash/task/" + id, true);
     xhttp.send();
 }
 
@@ -127,10 +134,10 @@ function createTaskElement(task){
     content.appendChild(document.createElement("br"));
 
     // Task Details
-    var details = document.createElement("label");
-    details.innerHTML = task.details;
-    details.classList.add("taskDetails");
-    content.appendChild(details);
+    var description = document.createElement("label");
+    description.innerHTML = task.description;
+    description.classList.add("taskDetails");
+    content.appendChild(description);
 
     // Task Footer
     var bottomDiv = document.createElement("div");
@@ -156,7 +163,7 @@ function createTaskElement(task){
     delBtn.type = "button";
     delBtn.classList.add("btnEmbed");
     delBtn.value = "Delete";
-    delBtn.addEventListener("click", deleteTaskBtnClick);
+    delBtn.onclick = deleteTaskBtnClick;
     bottomDiv.appendChild(delBtn);
 
     setTaskColor(task);
@@ -195,14 +202,7 @@ function doneTaskBtnClick(){
 function deleteTaskBtnClick(){
     taskDiv = this.parentNode.parentNode;
     id = parseInt(taskDiv.id.match("[0-9]+")[0]);
-
-    tasks = tasks.filter(function(t) {
-        return t.id != id;
-    })
-
-    taskDiv.remove();
-
-    refreshTasks();
+    deleteTask(id);
 }
 
 

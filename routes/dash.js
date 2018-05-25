@@ -135,7 +135,7 @@ router.post('/addtrip', function(req, res, next) {
 });
 
 //
-// Response Functions
+// Response Functions -------------------------------------------------------------------------
 //
 
 async function renderDashResponse(req, res, next) {
@@ -177,7 +177,7 @@ async function addTaskResponse(req, res, next) {
 }
 
 //
-// Database Functions
+// Database Functions -------------------------------------------------------------------------
 //
 
 function loadUser(userId) {
