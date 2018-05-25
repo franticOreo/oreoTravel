@@ -28,6 +28,8 @@ window.onload = function() {
     });
 
     getTrips();
+
+    getMatches();
 }
 
 function toggleAboutDisplay(){
@@ -53,7 +55,14 @@ var people = ["Eric", "Gwin", "Tails"];
 var currentTripId;
 var trips = [];
 
-function setCurrentTrip(id) {
+function getMatches() {
+    var xhttp = new XMLHttpRequest();
+    // xhttp.onreadystatechange = handleTripsResponse;
+    xhttp.open("GET", "/dash/search", true);
+    xhttp.send();
+}
+
+function setCurrentTrip(id) { // Add an option for if the use has no trips
     currentTripId = id;
 
     // Remove old task elements
@@ -98,7 +107,9 @@ function getTrips() {
 function handleTripsResponse() {
     if (this.readyState == 4 && this.status == 200) {
         trips = JSON.parse(this.responseText);
-        setCurrentTrip(trips[0]._id);
+        if (trips[0]){
+            setCurrentTrip(trips[0]._id);
+        }
         refreshTasks();
     }
 }
