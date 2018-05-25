@@ -9,7 +9,10 @@ block content
       .sideInfo #{title}
     div#profile.invert2
       div
-        label Welcome #{firstName} #{lastName}
+        label Welcome #{firstName}
+      div
+        button#btnMatch.btnNav
+          i.material-icons search
       div
         button#btnNewTrip.btnNav
           i.material-icons add
@@ -75,6 +78,10 @@ block content
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
       h2 Settings
+  #matchBlanket.blanket(style='display: none;')
+    #matchPage.spotlight
+      h2 Your Matches
+      #matchContent
   #newTripBlanket.blanket(style='display: none;')
     #newTripPage.spotlight
       h2 New Trip

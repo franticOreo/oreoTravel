@@ -47,7 +47,6 @@ router.get('/search', SearchForFriends);
 function getMatchingTrips(req) {
   return new Promise((resolve, reject) => {
     var d = req.session.prefferedDest;
-    console.log(d);
     Trip.aggregate([
       {
         $facet: {
@@ -85,7 +84,7 @@ function getMatchingTrips(req) {
   // { region , country , city_state}
 async  function SearchForFriends(req, res, next) {
     var trips = await getMatchingTrips(req);
-    console.log(trips);
+    res.send(trips);
 
       // if (req.session.prefferedDest.city_state === "") {
       //     if (req.session.prefferedDest.country === "") {

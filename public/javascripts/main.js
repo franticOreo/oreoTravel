@@ -27,8 +27,12 @@ window.onload = function() {
         if (!document.getElementById("newTripPage").contains(e.target)) toggleNewTripDisplay();
     });
 
-    getTrips();
+    this.document.getElementById("btnMatch").addEventListener("click", toggleMatchDisplay);
+    this.document.getElementById("matchBlanket").addEventListener("click", function(e){
+        if (!document.getElementById("matchPage").contains(e.target)) toggleMatchDisplay();
+    });
 
+    getTrips();
     getMatches();
 }
 
@@ -47,6 +51,11 @@ function toggleNewTripDisplay(){
     e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
 }
 
+function toggleMatchDisplay(){
+    var e = document.getElementById("matchBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
 // --------------------------------------------------------------------------------------------------------
 
 var tasks = [];
@@ -55,11 +64,89 @@ var people = ["Eric", "Gwin", "Tails"];
 var currentTripId;
 var trips = [];
 
+function trip(name, description, priority, date, assign){
+    this._id = 0;
+    this.name = name;
+    this.description = description;
+    this.priority = priority;
+    this.date = date;
+    this.assign = assign;
+    this.done = false;
+    return this;
+}
+
 function getMatches() {
     var xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = handleTripsResponse;
+    xhttp.onreadystatechange = handleMatchResponse;
     xhttp.open("GET", "/dash/search", true);
     xhttp.send();
+}
+
+function handleMatchResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        var matches = JSON.parse(this.responseText);
+        for (var i = 0; i < matches.length; i++) {
+            createTripElement(matches[i]);
+        }
+    }
+}
+
+function createTripElement(trip) {
+    var tripDiv = document.createElement("div");
+    tripDiv.classList.add("task", "paper");
+    tripDiv.id = trip._id;
+    var mainDiv = document.getElementById("matchContent");
+    
+    mainDiv.appendChild(tripDiv);
+
+    // Main content div
+    var content = document.createElement("div");
+    content.classList.add("taskContent");
+    tripDiv.appendChild(content)
+
+    // Title
+    var title = document.createElement("label");
+    title.innerHTML = trip.title;
+    title.htmlFor = tripDiv.id;
+    title.classList.add("taskName");
+    content.appendChild(title);
+
+    content.appendChild(document.createElement("br"));
+
+    // // Task Details
+    // var description = document.createElement("label");
+    // description.innerHTML = trip.description;
+    // description.classList.add("taskDetails");
+    // content.appendChild(description);
+
+    // Footer
+    var bottomDiv = document.createElement("div");
+    bottomDiv.classList.add("bottomBar");
+    tripDiv.appendChild(bottomDiv);
+
+    // Destination Label
+    var destination = document.createElement("label");
+    destination.classList.add("priority")
+    destination.innerHTML = trip.city + ", " + trip.country + ", " + trip.region;
+    bottomDiv.appendChild(destination);
+
+    // Join Button
+    var joinBtn = document.createElement("input");
+    joinBtn.type = "button";
+    joinBtn.classList.add("btnEmbed");
+    joinBtn.value = "Join";
+    // joinBtn.addEventListener("click", doneTaskBtnClick);
+    bottomDiv.appendChild(joinBtn);
+
+    // // Delete Button
+    // var delBtn = document.createElement("input");
+    // delBtn.type = "button";
+    // delBtn.classList.add("btnEmbed");
+    // delBtn.value = "Delete";
+    // delBtn.onclick = deleteTaskBtnClick;
+    // bottomDiv.appendChild(delBtn);
+
+    // setTaskColor(trip);
 }
 
 function setCurrentTrip(id) { // Add an option for if the use has no trips
@@ -77,17 +164,6 @@ function setCurrentTrip(id) { // Add an option for if the use has no trips
         createTaskElement(tasks[i]);
     }
     refreshTasks();
-}
-
-function task(name, description, priority, date, assign){
-    this._id = 0;
-    this.name = name;
-    this.description = description;
-    this.priority = priority;
-    this.date = date;
-    this.assign = assign;
-    this.done = false;
-    return this;
 }
 
 function getTasks(id) { // To be deprecated
@@ -115,7 +191,7 @@ function handleTripsResponse() {
 }
 
 function addTask(id) {
-    var t = new task(
+    var t = new trip(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
         document.getElementById("newTaskPriority").value,
@@ -153,7 +229,7 @@ function handleTaskResponse() {
 
 // Create the elements that display a task
 function createTaskElement(task){
-    taskDiv = document.createElement("div");
+    var taskDiv = document.createElement("div");
     taskDiv.classList.add("task", "paper");
     taskDiv.id = task._id;
     var mainDiv = document.getElementById("main");

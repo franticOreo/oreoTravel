@@ -121,7 +121,7 @@ label {
     padding: 12px;
 }
 
-#main {
+#main, #matchContent {
     position: relative;
     display: grid;
     min-height: 0px;
@@ -141,7 +141,7 @@ label {
     padding: 6px 24px;
     margin: 0;
     display: grid;
-    grid-template-columns: auto min-content min-content;
+    grid-template-columns: auto min-content min-content min-content;
     grid-template-rows: auto;
     background-color: var(--light-color);
     border: 0 24px 0 24px var(--light-color);
