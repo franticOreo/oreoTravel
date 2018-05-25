@@ -22,7 +22,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each trip in tripName
-          li(onclick='getTasks(\"' + trip._id + '\");').label.sideInfo #{trip.title}
+          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
             //- h5.sideInfo=name.title
       if friendsNames
         h4.sideInfo Friends

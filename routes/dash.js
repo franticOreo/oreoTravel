@@ -91,11 +91,15 @@ async  function SearchForFriends() {
 // else respond with first tripId root
 router.get('/', renderDashResponse);
 
+router.get('/trips', getTripsResponse);
+
 // Load the tasks for a trip
 router.get('/task/:tripId', getTasksResponse);
 
 // Add a task to a trip
 router.post('/task/:tripId', addTaskResponse);
+
+router.delete('/task/:tripId/:taskId', deleteTaskResponse);
 
 // update trip with trip details
 router.post('/addtrip', function(req, res, next) {
@@ -164,6 +168,13 @@ async function renderDashResponse(req, res, next) {
   });
 }
 
+async function getTripsResponse(req, res, next) {
+  var user = await loadUser(req.session.userId);
+  var trips = await loadTrips(user);
+  res.type('json');
+  res.send(trips);
+}
+
 async function getTasksResponse(req, res, next) {
   var tasks = await loadTasks(req.params['tripId']);
   res.type('json');
@@ -173,6 +184,11 @@ async function getTasksResponse(req, res, next) {
 async function addTaskResponse(req, res, next) {
   // await Trip.remove({});
   await addTask(req);
+  getTasksResponse(req, res, next);
+}
+
+async function deleteTaskResponse(req, res, next) {
+  await deleteTask(req);
   getTasksResponse(req, res, next);
 }
 
@@ -190,11 +206,11 @@ function loadUser(userId) {
   })
 }
 
-function loadTrips(user) { // <------------------ Find a way to not include tasks in this query
+function loadTrips(user) {
   // if user has trip render dash with trips
   return new Promise((resolve, reject) => {
     if (user.trips.length != 0) {
-      Trip.find({'users':[user]}, (err, result) => {
+      Trip.find({'users': user}, (err, result) => {
         if (err) reject();
         resolve(result);
       });
@@ -213,7 +229,6 @@ function loadTasks(tripId) {
         console.log(err.message);
         reject();
       }
-      console.log("Loading Tasks Success");
       resolve(result[0].tasks);
     })
   })
@@ -238,10 +253,25 @@ function addTask(req) {
       },
       (err, data) => {
         if (err) reject();
-        console.log("Adding Task Success");
         resolve();
       }
     );
+  })
+}
+
+function deleteTask(req) {
+  return new Promise((resolve, reject) => {
+    Trip.update(
+      { _id: req.params.tripId },
+      { $pull: { tasks: { _id: req.params.taskId } } },
+      (err, data) => {
+        if (err) {
+          console.log(err.message);
+          reject();
+        }
+        resolve();
+      }
+    )
   })
 }
 

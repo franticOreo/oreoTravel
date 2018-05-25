@@ -27,7 +27,7 @@ window.onload = function() {
         if (!document.getElementById("newTripPage").contains(e.target)) toggleNewTripDisplay();
     });
 
-    refreshTasks();
+    getTrips();
 }
 
 function toggleAboutDisplay(){
@@ -51,10 +51,23 @@ var tasks = [];
 var idTick = 0;
 var people = ["Eric", "Gwin", "Tails"];
 var currentTripId;
+var trips = [];
 
-function setCurrentTripId(id) {
+function setCurrentTrip(id) {
     currentTripId = id;
 
+    // Remove old task elements
+    for (var i = 0; i < tasks.length; i++)
+        document.getElementById(tasks[i]._id).remove();
+
+    tasks = trips.find(t => { return t._id == id; }).tasks;
+
+    // Create new task elements
+    for (var i = 0; i < tasks.length; i++) {
+        tasks[i].date = new Date(tasks[i].date);
+        createTaskElement(tasks[i]);
+    }
+    refreshTasks();
 }
 
 function task(name, description, priority, date, assign){
@@ -68,11 +81,26 @@ function task(name, description, priority, date, assign){
     return this;
 }
 
-function getTasks(id) {
+function getTasks(id) { // To be deprecated
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
     xhttp.open("GET", "/dash/task/" + id, true);
     xhttp.send();
+}
+
+function getTrips() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTripsResponse;
+    xhttp.open("GET", "/dash/trips", true);
+    xhttp.send();
+}
+
+function handleTripsResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        trips = JSON.parse(this.responseText);
+        setCurrentTrip(trips[0]._id);
+        refreshTasks();
+    }
 }
 
 function addTask(id) {
@@ -94,19 +122,21 @@ function addTask(id) {
 function deleteTask(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
-    xhttp.open("DELETE", "/dash/task/" + id, true);
-    xhttp.send();
+    xhttp.open("DELETE", "/dash/task/" + currentTripId + "/" + id, true);
+    xhttp.send({ tripId: currentTripId });
+    setCurrentTrip(currentTripId);
 }
 
 function handleTaskResponse() {
     if (this.readyState == 4 && this.status == 200) {
-        tasks = JSON.parse(this.responseText);
-        console.log(tasks);
-        for (var i = 0; i < tasks.length; i++) {
-            tasks[i].date = new Date(tasks[i].date);
-            createTaskElement(tasks[i]);
+        var t = JSON.parse(this.responseText);
+        for (var i = 0; i < trips.length; i++) {
+            if (trips[i]._id == currentTripId) {
+                trips[i].tasks = t;
+                break;
+            }
         }
-        refreshTasks();
+        setCurrentTrip(currentTripId); // Refresh All
     }
 }
 
@@ -114,7 +144,7 @@ function handleTaskResponse() {
 function createTaskElement(task){
     taskDiv = document.createElement("div");
     taskDiv.classList.add("task", "paper");
-    taskDiv.id = "task_" + task._id;
+    taskDiv.id = task._id;
     var mainDiv = document.getElementById("main");
     
     mainDiv.appendChild(taskDiv);
@@ -174,7 +204,7 @@ function refreshTasks(){
     tasks = tasks.sort([compareTime, comparePriority, compareAssignment, compareDone][document.getElementById("orderBy").value]);
     var mainDiv = document.getElementById("main");
     tasks.forEach(t => {
-        mainDiv.appendChild(document.getElementById("task_" + t._id));
+        mainDiv.appendChild(document.getElementById(t._id));
     });
 
     i = 0;
@@ -201,8 +231,7 @@ function doneTaskBtnClick(){
 
 function deleteTaskBtnClick(){
     taskDiv = this.parentNode.parentNode;
-    id = parseInt(taskDiv.id.match("[0-9]+")[0]);
-    deleteTask(id);
+    deleteTask(taskDiv.id);
 }
 
 
@@ -230,7 +259,7 @@ function compareDone(a, b){
 /* --- Helpful Routines --- */
 
 function setTaskColor(task) {
-    document.getElementById("task_" + task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
+    document.getElementById(task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
 }
 
 // Inserts an element after a reference node.
@@ -247,7 +276,6 @@ function dateToAussieString(d){
 function dateToFullAussieString(d){
     return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 }
-
 
 // Add a delete function for elements
 Element.prototype.remove = function() {
