@@ -130,6 +130,7 @@ router.get('/task/:tripId', getTasksResponse);
 router.post('/task/:tripId', addTaskResponse);
 
 router.delete('/task/:tripId/:taskId', deleteTaskResponse);
+router.put('/task/:tripId/:taskId/:done', doneTaskResponse);
 
 // update trip with trip details
 router.post('/addtrip', function(req, res, next) {
@@ -222,6 +223,11 @@ async function deleteTaskResponse(req, res, next) {
   getTasksResponse(req, res, next);
 }
 
+async function doneTaskResponse(req, res, next) {
+  await doneTask(req);
+  getTasksResponse(req, res, next);
+}
+
 //
 // Database Functions -------------------------------------------------------------------------
 //
@@ -266,6 +272,7 @@ function loadTasks(tripId) {
 
 function addTask(req) {
   var b = req.body
+  console.log(b.done);
   return new Promise((resolve, reject) => {
     Trip.update(
       { _id: req.params.tripId },
@@ -300,6 +307,35 @@ function deleteTask(req) {
           reject();
         }
         resolve();
+      }
+    )
+  })
+}
+
+function doneTask(req) {
+  return new Promise((resolve, reject) => {
+    Trip.findOne(
+      { _id: req.params.tripId },
+      (err, result) => {
+        if (err) {
+          console.log(err.message);
+          reject();
+        }
+        console.log(result.tasks.id(req.params.taskId));
+        console.log("Done: " + req.params.done);
+        result.tasks.id(req.params.taskId).done = req.params.done == "done";
+        console.log(result.tasks.id(req.params.taskId));
+        Trip.update(
+          { _id: req.params.tripId },
+          { tasks: result.tasks },
+          (err, data) => {
+            if (err) {
+              console.log(err.message);
+              reject();
+            }
+            resolve();
+          }
+        )
       }
     )
   })

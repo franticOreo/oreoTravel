@@ -22,7 +22,12 @@ body {
     margin: 0px;
     font-family: var(--body-font);
     margin: 0;
-    background-color: var(--secondary-color)
+    background-color: var(--secondary-color);
+    background-image: url("/images/Africa.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 nav {
