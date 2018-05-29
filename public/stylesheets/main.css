@@ -18,12 +18,12 @@ body {
     overflow: auto;
     display: grid;
     grid-template-columns: minmax(0px, 300px) minmax(100px, auto);
-    grid-template-rows: 60px auto 1fr 24px;
+    grid-template-rows: min-content auto 1fr 24px;
     margin: 0px;
     font-family: var(--body-font);
     margin: 0;
     background-color: var(--secondary-color);
-    background-image: url("/images/Africa.jpg");
+    background-image: none;
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
@@ -124,6 +124,9 @@ label {
     position: relative;
     background-color: var(--tertiary-color);
     padding: 12px;
+    display: grid;
+    grid-template-columns: auto min-content;
+    grid-template-rows: auto;
 }
 
 #main, #matchContent {

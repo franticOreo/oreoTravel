@@ -73,14 +73,16 @@ function setCurrentTrip(id) { // Add an option for if the use has no trips
     for (var i = 0; i < tasks.length; i++)
         document.getElementById(tasks[i]._id).remove();
 
-    tasks = trips.find(t => { return t._id == id; }).tasks;
+    var trip = trips.find(t => { return t._id == id; });
+    tasks = trip.tasks;
 
     // Create new task elements
     for (var i = 0; i < tasks.length; i++) {
         tasks[i].date = new Date(tasks[i].date);
-        createTaskElement(tasks[i]);
+        createTaskElement(tasks[i])
     }
 
+    people = trip.users;
     
     var assignSelector = document.getElementById("newTaskAssign");
     for (var i = 0; i < people.length; i++) {
@@ -89,8 +91,10 @@ function setCurrentTrip(id) { // Add an option for if the use has no trips
         opt.innerHTML = people[i];
         assignSelector.appendChild(opt);
     };
-
+    document.getElementById("currentTripTitle").innerHTML = trip.title;
+    document.body.style.backgroundImage = "url(/images/" + trip.region + ".jpg)";
     refreshTasks();
+    
 }
 
 function getTasks(id) { // To be deprecated
