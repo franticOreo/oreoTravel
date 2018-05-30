@@ -31,13 +31,22 @@ block content
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
-    label(for='orderBy') Order By
-    br
-    select#orderBy.flat(onchange='refreshTasks();')
-      option(value='0') Date
-      option(value='1') Priority
-      option(value='2') Assignment
-      option(value='3') Done
+    div.viewL
+      label(for='orderBy') Order By
+      br
+      select#orderBy.flat(onchange='refreshTasks();')
+        option(value='0') Date
+        option(value='1') Priority
+        option(value='2') Assignment
+        option(value='3') Done
+      
+    //- button#view.logout(href='/dash/logout') Logout
+    
+    div.viewR
+      form(name='logout' action='dash/logout' method="POST")
+        input(type='submit' value='Logout')
+
+
   #main
     form#newTask.paper(action='/dash/addtask/' + selectedTrip method='POST')
       .wideGrid

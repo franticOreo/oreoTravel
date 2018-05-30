@@ -116,9 +116,27 @@ label {
 }
 
 #view {
-    position: relative;
+    /* position: relative; */
+    /* display: grid; */
+    grid-template-columns: 1fr 1fr
+    grid-template-rows: auto;
     background-color: var(--tertiary-color);
     padding: 12px;
+}
+
+.viewL {
+  grid-column: 1/1;
+}
+
+.viewR {
+  grid-column: 1/2;
+}
+
+.logout {
+  position: relative;
+  float: right;
+  grid-column: 2;
+  /* align-items: flex-end; */
 }
 
 #main {

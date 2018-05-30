@@ -3,38 +3,6 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt')
 var TripSchema = require('./trip.js')
 
-
-// var UserSchema = new mongoose.Schema({
-//   firstName: {
-//     type: String,
-//     required: true,
-//     trim: true,
-//   },
-//   lastName: {
-//     type: String,
-//     required: true,
-//     trim: true,
-//   },
-//   password: {
-//     type: String,
-//     required: true,
-//     trim: true,
-//   },
-//   email: {
-//     type: String,
-//     required: true,
-//     trim: true,
-//     unique: true,
-//   },
-//   expertise: {
-//     type: String,
-//     required: true,
-//     trim: true
-//   },
-//   trips: [TripSchema]
-//
-// });
-
 var UserSchema = new mongoose.Schema({
   firstName: {
     type: String,

@@ -28,60 +28,67 @@ router.post('/', function(req, res, next) {
   }
 });
 
+router.post('/logout', function(req, res, next) {
+  req.session.destroy();
+  return res.redirect('/')
+})
 
-
-
-
-function findUserFriends(destinationType, prefferredDest) {
+function findUserFriends(destType, prefferredDest) {
   return new Promise((resolve, reject) => {
-    User.find({destinationType: prefferredDest}, {firstName: 1, _id: 0},
+    User.find({destType: prefferredDest}, {firstName: 1, _id: 0},
     (err, data) => {
       if (err) reject(); // PROBS NEED BETTER ERROR HANDLER
+      console.log(data);
       resolve(data);
-
       }
     )
 
   })
 }
 
+// preferences from sign up form
+// dash : new trip OR search existing trips
+// Search for existing trips through trip Schema
+//
 
-router.get('/search', function(req, res, next) {
-  // console.log(req.session.prefferedDest.city_state === "")
+// { region , country , city_state}
+async  function SearchForFriends(req, res, next) {
 
-  // { region , country , city_state}
-async  function SearchForFriends() {
+    if (req.session.prefferedDest.city_state === "") {
+        if (req.session.prefferedDest.country === "") {
+          req.session.dest = req.session.prefferedDest.region
+        }
+        else {
+          req.session.dest = req.session.prefferedDest.country
+        }
+    }
+    else {
+      req.session.dest = req.session.prefferedDest.city_state
+      // city state is not null so find through User Schema
+      // var friendsNames = await findUserFriends("city_state",req.session.prefferedDest.city_state)
 
+      // console.log(friendsNames);
 
-
-      if (req.session.prefferedDest.city_state === "") {
-          if (req.session.prefferedDest.country === "") {
-            req.session.dest = req.session.prefferedDest.region
-          }
-          else {
-            req.session.dest = req.session.prefferedDest.country
-          }
-      }
-      else {
-        req.session.dest = req.session.prefferedDest.city_state
-        // city state is not null so find through User Schema
-        var friendsNames = findUserFriends("city_state", req.session.prefferedDest.city_state)
-        res.render('dash', {friendsNames:friendsNames})
-          // var tasks = await loadTasks(req.params['tripId']);
-
-      }
-      console.log(req.session.dest)
-      // get users prefferred destination
-      // from UserSchema
-      // check if city_state empty if check country ...
-
+      Trip.aggregate([{$match: {"city_state":"Algiers"}, cursor:{}}],
+      (err, data) => {
+        if (err) return err; // PROBS NEED BETTER ERROR HANDLER
+        console.log(data);
+        })
 
 
-      // search through User Schema for Country > region
+      res.render('dash', {tripName: []})
+        // var tasks = await loadTasks(req.params['tripId']);
+    }
+    console.log(req.session.dest)
+    // get users prefferred destination
+    // from UserSchema
+    // check if city_state empty if check country ...
+
+    // search through User Schema for Country > region
 
 }
+router.get('/find-users', SearchForFriends)
 
-})
 
 // GET /Dash
 // Check if user is authenticated
@@ -89,25 +96,30 @@ async  function SearchForFriends() {
 
 // return root of dash if user has no trip
 // else respond with first tripId root
-router.get('/', renderDashResponse);
+router.get('/', renderAll);
 
-// Load the tasks for a trip
-router.get('/task/:tripId', getTasksResponse);
+// make routes for each destination to show select tasks
+// the route parameter will be the id of the destination
+// the post request will come from links in the destination list
+// it will use dash view with objects from the task object inside project object
+router.get('/:tripId', getTasksResponse);
 
-// Add a task to a trip
-router.post('/task/:tripId', addTaskResponse);
+async function getTasksResponse(req, res, next) {
+  var tasks = await loadTasks(req.params['tripId']);
+  console.log(tasks);
+  res.type('json');
+  res.send(tasks);
+}
 
 // update trip with trip details
+// how to tell parent which children are there own?
 router.post('/addtrip', function(req, res, next) {
   // pushes new trip to Trip array
 
-  Trip.create({
-    users:req.session.userId, 
-    title: req.body.tripName,
-    region: req.body.region,
-    country: req.body.country,
-    city: req.body.city_state
-  },
+  Trip.create({users:req.session.userId, title: req.body.tripName,
+      region: req.body.region,
+      country: req.body.country,
+      city: req.body.city_state},
   function(err, data) {
     if (err) {
       res.status = 500;
@@ -115,69 +127,59 @@ router.post('/addtrip', function(req, res, next) {
         message: err.message
       });
     } else {
-    // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
-    var tripId = data._id;
-    User.update({_id:req.session.userId}, {$push: {trips: tripId}},
-      function(err, data) {
-        if (err) {
-          res.status = 500;
-          res.render('error', {
-            message: err.message
-          });
-        } else {
-          console.log(data, 'saved');
-          res.redirect('/dash')
-        }
-    // res.redirect('/dash')
+      // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
+      var tripId = data._id;
+      User.update({_id:req.session.userId}, {$push: {trips: tripId}},
+        function(err, data) {
+          if (err) {
+            res.status = 500;
+            res.render('error', {
+              message: err.message
+            });
+          } else {
+            console.log(data, 'saved');
+            res.redirect('/dash')
+          }
+      // res.redirect('/dash')
       })
     }
   });
 });
 
-//
-// Response Functions
-//
-
-async function renderDashResponse(req, res, next) {
-
-  // Load in user and trip data
-  var user = await loadUser(req.session.userId);
-  var trips = await loadTrips(user);
-
-  // Get the list of tasks corresponding to the id
-  var taskList = [];
-  if (req.params['tripId']) {
-    for (var i = 0; i < trips.length; i++) {
-      if (trips[i]._id = req.params['tripId']) {
-        taskList = trips[i].tasks;
+router.post('/:tripId/addtask', (req, res, next) => {
+  var b = req.body;
+  console.log(b);
+  Trip.update(
+    { _id: req.params.tripId },
+    {
+      $push: {
+        tasks: {
+          name: b.name,
+          description: b.description,
+          date: b.date,
+          priority: b.priority,
+          assign: [req.session.userId] // <-- Change this to selectable at some point
+        }
+      }
+    },
+    (err, data) => {
+      if (err) {
+        res.status = 500;
+        res.render('error', { message: err.message });
+      } else {
+        res.redirect('/dash/' + req.params.tripId)
       }
     }
-  }
+  );
+});
 
-  // Render - last
-  return res.render('dash', {
-    title: 'Logged In',
-    tripName: trips,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    selectedTrip: req.params['tripId']
-  });
-}
+router.get('/test/test', (req, res, next) => {
 
-async function getTasksResponse(req, res, next) {
-  var tasks = await loadTasks(req.params['tripId']);
-  res.type('json');
-  res.send(tasks);
-}
-
-async function addTaskResponse(req, res, next) {
-  // await Trip.remove({});
-  await addTask(req);
-  getTasksResponse(req, res, next);
-}
+  res.send("Hello, World!");
+})
 
 //
-// Database Functions
+// Loading data and rendering functions
 //
 
 function loadUser(userId) {
@@ -209,43 +211,47 @@ function loadTrips(user) { // <------------------ Find a way to not include task
 function loadTasks(tripId) {
   return new Promise((resolve, reject) => {
     Trip.find({_id: tripId}, {tasks: 1}, (err, result) => {
-      if (err) {
-        console.log(err.message);
-        reject();
-      }
-      console.log("Loading Tasks Success");
+      if (err) reject();
       resolve(result[0].tasks);
     })
   })
 }
 
-function addTask(req) {
-  var b = req.body
-  return new Promise((resolve, reject) => {
-    Trip.update(
-      { _id: req.params.tripId },
-      {
-        $push: {
-          tasks: {
-            name: b.name,
-            description: b.description,
-            date: Date.parse(b.date),
-            priority: b.priority,
-            assign: [req.session.userId], // <-- Change this to selectable at some point
-            done: b.done
-          }
-        }
-      },
-      (err, data) => {
-        if (err) reject();
-        console.log("Adding Task Success");
-        resolve();
+async function renderAll(req, res, next) {
+
+  // Load in user and trip data
+  var user = await loadUser(req.session.userId);
+  var trips = await loadTrips(user);
+
+  // Get the list of tasks corresponding to the id
+  var taskList = [];
+  if (req.params['tripId']) {
+    for (var i = 0; i < trips.length; i++) {
+      if (trips[i]._id = req.params['tripId']) {
+        taskList = trips[i].tasks;
       }
-    );
-  })
+    }
+  }
+
+
+  console.log(req.params['tripId']);
+  console.log(taskList);
+  // console.log(trips);
+
+
+  // Render - last
+  return res.render('dash', {
+    title: 'Logged In',
+    tripName: trips,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    selectedTrip: req.params['tripId']
+  });
 }
 
 module.exports = router
+
+
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination
