@@ -1,15 +1,6 @@
 window.onload = function() {
     document.getElementById("newTaskDate").value = new Date().toDateInputValue();
 
-    var assignSelector = document.getElementById("newTaskAssign");
-    
-    for (var i = 0; i < people.length; i++) {
-        var opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = people[i];
-        assignSelector.appendChild(opt);
-    };
-
     document.getElementById("newTaskDesc").innerHTML = "";
 
     this.document.getElementById("aboutBtnDash").addEventListener("click", toggleAboutDisplay);
@@ -27,7 +18,13 @@ window.onload = function() {
         if (!document.getElementById("newTripPage").contains(e.target)) toggleNewTripDisplay();
     });
 
-    refreshTasks();
+    this.document.getElementById("btnMatch").addEventListener("click", toggleMatchDisplay);
+    this.document.getElementById("matchBlanket").addEventListener("click", function(e){
+        if (!document.getElementById("matchPage").contains(e.target)) toggleMatchDisplay();
+    });
+
+    getTrips();
+    getMatches();
 }
 
 function toggleAboutDisplay(){
@@ -45,19 +42,20 @@ function toggleNewTripDisplay(){
     e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
 }
 
+function toggleMatchDisplay(){
+    var e = document.getElementById("matchBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
 // --------------------------------------------------------------------------------------------------------
 
 var tasks = [];
 var idTick = 0;
-var people = ["Eric", "Gwin", "Tails"];
+var people = [];
 var currentTripId;
+var trips = [];
 
-function setCurrentTripId(id) {
-    currentTripId = id;
-
-}
-
-function task(name, description, priority, date, assign){
+function trip(name, description, priority, date, assign){
     this._id = 0;
     this.name = name;
     this.description = description;
@@ -68,8 +66,63 @@ function task(name, description, priority, date, assign){
     return this;
 }
 
-function addTask(id){
-    var t = new task(
+function setCurrentTrip(id) { // Add an option for if the use has no trips
+    currentTripId = id;
+
+    // Remove old task elements
+    for (var i = 0; i < tasks.length; i++)
+        document.getElementById(tasks[i]._id).remove();
+
+    var trip = trips.find(t => { return t._id == id; });
+    tasks = trip.tasks;
+
+    // Create new task elements
+    for (var i = 0; i < tasks.length; i++) {
+        tasks[i].date = new Date(tasks[i].date);
+        createTaskElement(tasks[i])
+    }
+
+    people = trip.users;
+    
+    var assignSelector = document.getElementById("newTaskAssign");
+    for (var i = 0; i < people.length; i++) {
+        var opt = document.createElement("option");
+        opt.value = i;
+        opt.innerHTML = people[i];
+        assignSelector.appendChild(opt);
+    };
+    document.getElementById("currentTripTitle").innerHTML = trip.title;
+    document.body.style.backgroundImage = "url(/images/" + trip.region + ".jpg)";
+    refreshTasks();
+    
+}
+
+function getTasks(id) { // To be deprecated
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTaskResponse;
+    xhttp.open("GET", "/dash/task/" + id, true);
+    xhttp.send();
+}
+
+function getTrips() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTripsResponse;
+    xhttp.open("GET", "/dash/trips", true);
+    xhttp.send();
+}
+
+function handleTripsResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        trips = JSON.parse(this.responseText);
+        if (trips[0]){
+            setCurrentTrip(trips[0]._id);
+        }
+        refreshTasks();
+    }
+}
+
+function addTask(id) {
+    var t = new trip(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
         document.getElementById("newTaskPriority").value,
@@ -84,30 +137,41 @@ function addTask(id){
     xhttp.send(JSON.stringify(t));
 }
 
-function getTasks(id) {
+function deleteTask(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
-    xhttp.open("GET", "/dash/task/" + id, true);
+    xhttp.open("DELETE", "/dash/task/" + currentTripId + "/" + id, true);
+    xhttp.send({ tripId: currentTripId });
+}
+
+function doneTask(id) {
+    var task = tasks.find(t => { return t._id == id; });
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleTaskResponse;
+    xhttp.open("PUT", "/dash/task/" + currentTripId + "/" + id + (task.done ? "/undo" : "/done"), true);
     xhttp.send();
 }
 
 function handleTaskResponse() {
     if (this.readyState == 4 && this.status == 200) {
-        tasks = JSON.parse(this.responseText);
-        console.log(tasks);
-        for (var i = 0; i < tasks.length; i++) {
-            tasks[i].date = new Date(tasks[i].date);
-            createTaskElement(tasks[i]);
+        var t = JSON.parse(this.responseText);
+        for (var i = 0; i < trips.length; i++) {
+            if (trips[i]._id == currentTripId) {
+                trips[i].tasks = t;
+                break;
+            }
         }
-        refreshTasks();
+        console.log(t);
+        setCurrentTrip(currentTripId); // Refresh All
     }
 }
 
 // Create the elements that display a task
 function createTaskElement(task){
-    taskDiv = document.createElement("div");
+    var taskDiv = document.createElement("div");
     taskDiv.classList.add("task", "paper");
-    taskDiv.id = "task_" + task._id;
+    taskDiv.id = task._id;
     var mainDiv = document.getElementById("main");
     
     mainDiv.appendChild(taskDiv);
@@ -127,10 +191,10 @@ function createTaskElement(task){
     content.appendChild(document.createElement("br"));
 
     // Task Details
-    var details = document.createElement("label");
-    details.innerHTML = task.details;
-    details.classList.add("taskDetails");
-    content.appendChild(details);
+    var description = document.createElement("label");
+    description.innerHTML = task.description;
+    description.classList.add("taskDetails");
+    content.appendChild(description);
 
     // Task Footer
     var bottomDiv = document.createElement("div");
@@ -147,7 +211,7 @@ function createTaskElement(task){
     var doneBtn = document.createElement("input");
     doneBtn.type = "button";
     doneBtn.classList.add("btnEmbed");
-    doneBtn.value = "Done";
+    doneBtn.value = task.done ? "Undo" : "Done";
     doneBtn.addEventListener("click", doneTaskBtnClick);
     bottomDiv.appendChild(doneBtn);
 
@@ -156,7 +220,7 @@ function createTaskElement(task){
     delBtn.type = "button";
     delBtn.classList.add("btnEmbed");
     delBtn.value = "Delete";
-    delBtn.addEventListener("click", deleteTaskBtnClick);
+    delBtn.onclick = deleteTaskBtnClick;
     bottomDiv.appendChild(delBtn);
 
     setTaskColor(task);
@@ -167,7 +231,7 @@ function refreshTasks(){
     tasks = tasks.sort([compareTime, comparePriority, compareAssignment, compareDone][document.getElementById("orderBy").value]);
     var mainDiv = document.getElementById("main");
     tasks.forEach(t => {
-        mainDiv.appendChild(document.getElementById("task_" + t._id));
+        mainDiv.appendChild(document.getElementById(t._id));
     });
 
     i = 0;
@@ -179,33 +243,97 @@ function refreshTasks(){
 
 function doneTaskBtnClick(){
     taskDiv = this.parentNode.parentNode;
-    id = parseInt(taskDiv.id.match("[0-9]+")[0]);
+    doneTask(taskDiv.id);
 
-    tasks.forEach(t => {
-        if (t.id == id){
-            t.done = !t.done;
-            this.value = t.done ? "Undo" : "Done";
-            setTaskColor(t);
-        }
-    });
+    // tasks.forEach(t => {
+    //     if (t.id == id){
+    //         t.done = !t.done;
+    //         this.value = t.done ? "Undo" : "Done";
+    //         setTaskColor(t);
+    //     }
+    // });
 
-    refreshTasks();
+    // refreshTasks();
 }
 
 function deleteTaskBtnClick(){
     taskDiv = this.parentNode.parentNode;
-    id = parseInt(taskDiv.id.match("[0-9]+")[0]);
-
-    tasks = tasks.filter(function(t) {
-        return t.id != id;
-    })
-
-    taskDiv.remove();
-
-    refreshTasks();
+    deleteTask(taskDiv.id);
 }
 
+function getMatches() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleMatchResponse;
+    xhttp.open("GET", "/dash/search", true);
+    xhttp.send();
+}
 
+function handleMatchResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        var matches = JSON.parse(this.responseText);
+        for (var i = 0; i < matches.length; i++) {
+            createTripElement(matches[i]);
+        }
+    }
+}
+
+function createTripElement(trip) {
+    var tripDiv = document.createElement("div");
+    tripDiv.classList.add("task", "paper");
+    tripDiv.id = trip._id;
+    var mainDiv = document.getElementById("matchContent");
+    
+    mainDiv.appendChild(tripDiv);
+
+    // Main content div
+    var content = document.createElement("div");
+    content.classList.add("taskContent");
+    tripDiv.appendChild(content)
+
+    // Title
+    var title = document.createElement("label");
+    title.innerHTML = trip.title;
+    title.htmlFor = tripDiv.id;
+    title.classList.add("taskName");
+    content.appendChild(title);
+
+    content.appendChild(document.createElement("br"));
+
+    // // Task Details
+    // var description = document.createElement("label");
+    // description.innerHTML = trip.description;
+    // description.classList.add("taskDetails");
+    // content.appendChild(description);
+
+    // Footer
+    var bottomDiv = document.createElement("div");
+    bottomDiv.classList.add("bottomBar");
+    tripDiv.appendChild(bottomDiv);
+
+    // Destination Label
+    var destination = document.createElement("label");
+    destination.classList.add("priority")
+    destination.innerHTML = (trip.city ? trip.city + ", " : "") + (trip.country ? trip.country + ", " : "") + trip.region;
+    bottomDiv.appendChild(destination);
+
+    // Join Button
+    var joinBtn = document.createElement("input");
+    joinBtn.type = "button";
+    joinBtn.classList.add("btnEmbed");
+    joinBtn.value = "Join";
+    // joinBtn.addEventListener("click", doneTaskBtnClick);
+    bottomDiv.appendChild(joinBtn);
+
+    // // Delete Button
+    // var delBtn = document.createElement("input");
+    // delBtn.type = "button";
+    // delBtn.classList.add("btnEmbed");
+    // delBtn.value = "Delete";
+    // delBtn.onclick = deleteTaskBtnClick;
+    // bottomDiv.appendChild(delBtn);
+
+    // setTaskColor(trip);
+}
 
 /* --- Task Sorting Functions --- */
 
@@ -230,7 +358,7 @@ function compareDone(a, b){
 /* --- Helpful Routines --- */
 
 function setTaskColor(task) {
-    document.getElementById("task_" + task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
+    document.getElementById(task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
 }
 
 // Inserts an element after a reference node.
@@ -247,7 +375,6 @@ function dateToAussieString(d){
 function dateToFullAussieString(d){
     return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 }
-
 
 // Add a delete function for elements
 Element.prototype.remove = function() {

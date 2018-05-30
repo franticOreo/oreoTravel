@@ -11,6 +11,9 @@ window.onload = function(){
     this.document.getElementById("aboutBlanket").addEventListener("click", function(e){
         if (!document.getElementById("aboutPage").contains(e.target)) toggleAboutDisplay();
     });
+    
+    var countries = ["Africa", "Antartica", "Asia", "Australia-Oceania", "Caribean", "Central America", "Europe", "Islands", "Middle East", "North America", "South America"]
+    document.body.style.backgroundImage = "url(/images/" + countries[Math.floor(Math.random()*countries.length)] + ".jpg)";
 }
 
 function toggleLoginDisplay(){

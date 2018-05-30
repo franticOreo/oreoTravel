@@ -18,11 +18,16 @@ body {
     overflow: auto;
     display: grid;
     grid-template-columns: minmax(0px, 300px) minmax(100px, auto);
-    grid-template-rows: 60px auto 1fr 24px;
+    grid-template-rows: min-content auto 1fr 24px;
     margin: 0px;
     font-family: var(--body-font);
     margin: 0;
-    background-color: var(--secondary-color)
+    background-color: var(--secondary-color);
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 nav {
@@ -116,30 +121,15 @@ label {
 }
 
 #view {
-    /* position: relative; */
-    /* display: grid; */
-    grid-template-columns: 1fr 1fr
-    grid-template-rows: auto;
+    position: relative;
     background-color: var(--tertiary-color);
     padding: 12px;
+    display: grid;
+    grid-template-columns: auto min-content;
+    grid-template-rows: auto;
 }
 
-.viewL {
-  grid-column: 1/1;
-}
-
-.viewR {
-  grid-column: 1/2;
-}
-
-.logout {
-  position: relative;
-  float: right;
-  grid-column: 2;
-  /* align-items: flex-end; */
-}
-
-#main {
+#main, #matchContent {
     position: relative;
     display: grid;
     min-height: 0px;
@@ -159,7 +149,7 @@ label {
     padding: 6px 24px;
     margin: 0;
     display: grid;
-    grid-template-columns: auto min-content min-content;
+    grid-template-columns: auto min-content min-content min-content;
     grid-template-rows: auto;
     background-color: var(--light-color);
     border: 0 24px 0 24px var(--light-color);

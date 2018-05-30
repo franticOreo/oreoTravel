@@ -9,7 +9,10 @@ block content
       .sideInfo #{title}
     div#profile.invert2
       div
-        label Welcome #{firstName} #{lastName}
+        label Welcome #{firstName}
+      div
+        button#btnMatch.btnNav
+          i.material-icons search
       div
         button#btnNewTrip.btnNav
           i.material-icons add
@@ -22,7 +25,7 @@ block content
       if tripName
         h4.sideInfo Destinations
         each trip in tripName
-          li(onclick='getTasks(\"' + trip._id + '\");').label.sideInfo #{trip.title}
+          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
             //- h5.sideInfo=name.title
       if friendsNames
         h4.sideInfo Friends
@@ -31,7 +34,9 @@ block content
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
-    div.viewL
+    div
+      h2#currentTripTitle
+    div
       label(for='orderBy') Order By
       br
       select#orderBy.flat(onchange='refreshTasks();')
@@ -84,6 +89,10 @@ block content
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
       h2 Settings
+  #matchBlanket.blanket(style='display: none;')
+    #matchPage.spotlight
+      h2 Your Matches
+      #matchContent
   #newTripBlanket.blanket(style='display: none;')
     #newTripPage.spotlight
       h2 New Trip
