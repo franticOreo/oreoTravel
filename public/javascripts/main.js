@@ -63,7 +63,7 @@ function tripObject(name, description, priority, date, assign){
 
 
 
-// Ajax Requesters ====================================================
+// AJAX Requesters ====================================================
 
 function getTasks(id) { // To be deprecated
     var xhttp = new XMLHttpRequest();

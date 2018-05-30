@@ -20,8 +20,18 @@ block content
       div
         button#btnSettings.btnNav
           i.material-icons settings
-    #sideInfo
-      
+    div
+      if intro
+        label.sideInfo #{intro}
+      if tripName
+        h4.sideInfo Destinations
+        each trip in tripName
+          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
+            //- h5.sideInfo=name.title
+      if friendsNames
+        h4.sideInfo Friends
+        each friend in friendsNames
+          h4.sideInfo #{friend.firstName}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
