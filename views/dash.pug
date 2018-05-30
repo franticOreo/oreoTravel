@@ -4,6 +4,7 @@ block content
   link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
   script(src='/javascripts/main.js')
   script(src='/javascripts/city_state.js')
+  script(src='/javascripts/Vibrant.min.js')
   nav.paper
     div
       .sideInfo #{title}
@@ -19,18 +20,8 @@ block content
       div
         button#btnSettings.btnNav
           i.material-icons settings
-    div
-      if intro
-        label.sideInfo #{intro}
-      if tripName
-        h4.sideInfo Destinations
-        each trip in tripName
-          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
-            //- h5.sideInfo=name.title
-      if friendsNames
-        h4.sideInfo Friends
-        each friend in friendsNames
-          h4.sideInfo #{friend.firstName}
+    #sideInfo
+      
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
@@ -110,4 +101,4 @@ block content
           select.creds(name="city_state" size="1" disabled="disabled" required='')
         div
         div
-          input.btn(type='submit' value='Sign up')
+          input.btn(type='submit' value='Create')

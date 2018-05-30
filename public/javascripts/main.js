@@ -1,3 +1,14 @@
+// Initialise Dynamic content ==============================================
+
+document.body.style.cursor='wait';
+getTrips();
+getMatches();
+document.body.style.cursor='default';
+
+
+
+// Onload =============================================================
+
 window.onload = function() {
     document.getElementById("newTaskDate").value = new Date().toDateInputValue();
 
@@ -22,40 +33,24 @@ window.onload = function() {
     this.document.getElementById("matchBlanket").addEventListener("click", function(e){
         if (!document.getElementById("matchPage").contains(e.target)) toggleMatchDisplay();
     });
-
-    getTrips();
-    getMatches();
 }
 
-function toggleAboutDisplay(){
-    var e = document.getElementById("aboutBlanket");
-    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
-}
 
-function toggleSettingsDisplay(){
-    var e = document.getElementById("settingsBlanket");
-    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
-}
 
-function toggleNewTripDisplay(){
-    var e = document.getElementById("newTripBlanket");
-    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
-}
-
-function toggleMatchDisplay(){
-    var e = document.getElementById("matchBlanket");
-    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
-}
-
-// --------------------------------------------------------------------------------------------------------
+// Global variables ===================================================
 
 var tasks = [];
-var idTick = 0;
 var people = [];
 var currentTripId;
+var tripIndex;
 var trips = [];
+var userNames = [];
 
-function trip(name, description, priority, date, assign){
+
+
+// Constructors =======================================================
+
+function tripObject(name, description, priority, date, assign){
     this._id = 0;
     this.name = name;
     this.description = description;
@@ -66,36 +61,9 @@ function trip(name, description, priority, date, assign){
     return this;
 }
 
-function setCurrentTrip(id) { // Add an option for if the use has no trips
-    currentTripId = id;
 
-    // Remove old task elements
-    for (var i = 0; i < tasks.length; i++)
-        document.getElementById(tasks[i]._id).remove();
 
-    var trip = trips.find(t => { return t._id == id; });
-    tasks = trip.tasks;
-
-    // Create new task elements
-    for (var i = 0; i < tasks.length; i++) {
-        tasks[i].date = new Date(tasks[i].date);
-        createTaskElement(tasks[i])
-    }
-
-    people = trip.users;
-    
-    var assignSelector = document.getElementById("newTaskAssign");
-    for (var i = 0; i < people.length; i++) {
-        var opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = people[i];
-        assignSelector.appendChild(opt);
-    };
-    document.getElementById("currentTripTitle").innerHTML = trip.title;
-    document.body.style.backgroundImage = "url(/images/" + trip.region + ".jpg)";
-    refreshTasks();
-    
-}
+// Ajax Requesters ====================================================
 
 function getTasks(id) { // To be deprecated
     var xhttp = new XMLHttpRequest();
@@ -111,23 +79,21 @@ function getTrips() {
     xhttp.send();
 }
 
-function handleTripsResponse() {
-    if (this.readyState == 4 && this.status == 200) {
-        trips = JSON.parse(this.responseText);
-        if (trips[0]){
-            setCurrentTrip(trips[0]._id);
-        }
-        refreshTasks();
-    }
+function joinTrip(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleJoinTripResponse;
+    xhttp.open("POST", "/dash/joinTrip/" + id, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
 }
 
 function addTask(id) {
-    var t = new trip(
+    var t = new tripObject(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
         document.getElementById("newTaskPriority").value,
         new Date(document.getElementById("newTaskDate").value),
-        document.getElementById("newTaskAssign").value
+        userNames[tripIndex][document.getElementById("newTaskAssign").selectedIndex]._id
     );
 
     var xhttp = new XMLHttpRequest();
@@ -153,6 +119,35 @@ function doneTask(id) {
     xhttp.send();
 }
 
+function getMatches() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = handleMatchResponse;
+    xhttp.open("GET", "/dash/search", true);
+    xhttp.send();
+}
+
+
+
+// Http Request Response Handlers =====================================
+
+function handleTripsResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        var result = JSON.parse(this.responseText);
+        trips = result.trips;
+        userNames = result.names;
+        if (trips[0]){
+            setCurrentTrip(trips[0]._id);
+        }
+    }
+}
+
+function handleJoinTripResponse() {
+    document.body.style.cursor='wait';
+    getTrips();
+    getMatches();
+    document.body.style.cursor='default';
+}
+
 function handleTaskResponse() {
     if (this.readyState == 4 && this.status == 200) {
         var t = JSON.parse(this.responseText);
@@ -162,12 +157,23 @@ function handleTaskResponse() {
                 break;
             }
         }
-        console.log(t);
         setCurrentTrip(currentTripId); // Refresh All
     }
 }
 
-// Create the elements that display a task
+function handleMatchResponse() {
+    if (this.readyState == 4 && this.status == 200) {
+        var matches = JSON.parse(this.responseText);
+        for (var i = 0; i < matches.length; i++) {
+            createTripElement(matches[i]);
+        }
+    }
+}
+
+
+
+// Dynamic content ====================================================
+
 function createTaskElement(task){
     var taskDiv = document.createElement("div");
     taskDiv.classList.add("task", "paper");
@@ -203,8 +209,16 @@ function createTaskElement(task){
 
     // Priority Label
     var priority = document.createElement("label");
-    priority.classList.add("priority")
-    priority.innerHTML = dateToAussieString(task.date) + " - " + people[task.assign] + " - " + ["High", "Medium", "Optional"][task.priority];
+    priority.classList.add("priority");
+    var assign = [];
+    for (var i = 0; i < task.assign.length; i++) {
+        for (var j = 0; j < userNames[tripIndex].length; j++) {
+            if (userNames[tripIndex][j]._id == task.assign[i]){
+                assign.push(userNames[tripIndex][j].firstName);
+            }
+        }
+    }
+    priority.innerHTML = dateToAussieString(task.date) + " - " + assign.join(", ") + " - " + ["High", "Medium", "Optional"][task.priority];
     bottomDiv.appendChild(priority);
 
     // Done Button
@@ -224,57 +238,6 @@ function createTaskElement(task){
     bottomDiv.appendChild(delBtn);
 
     setTaskColor(task);
-}
-
-// Reorder the tasks according to the dropbox
-function refreshTasks(){
-    tasks = tasks.sort([compareTime, comparePriority, compareAssignment, compareDone][document.getElementById("orderBy").value]);
-    var mainDiv = document.getElementById("main");
-    tasks.forEach(t => {
-        mainDiv.appendChild(document.getElementById(t._id));
-    });
-
-    i = 0;
-    tasks.forEach(t => {if (!t.done) i++;});
-    document.getElementById("taskCount").innerHTML = "Task Count: " + tasks.length;
-    document.getElementById("tasksRemain").innerHTML = "Remaining Tasks: " + i;
-    document.getElementById("modTime").innerHTML = "Modified " + new Date().toLocaleString();
-}
-
-function doneTaskBtnClick(){
-    taskDiv = this.parentNode.parentNode;
-    doneTask(taskDiv.id);
-
-    // tasks.forEach(t => {
-    //     if (t.id == id){
-    //         t.done = !t.done;
-    //         this.value = t.done ? "Undo" : "Done";
-    //         setTaskColor(t);
-    //     }
-    // });
-
-    // refreshTasks();
-}
-
-function deleteTaskBtnClick(){
-    taskDiv = this.parentNode.parentNode;
-    deleteTask(taskDiv.id);
-}
-
-function getMatches() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = handleMatchResponse;
-    xhttp.open("GET", "/dash/search", true);
-    xhttp.send();
-}
-
-function handleMatchResponse() {
-    if (this.readyState == 4 && this.status == 200) {
-        var matches = JSON.parse(this.responseText);
-        for (var i = 0; i < matches.length; i++) {
-            createTripElement(matches[i]);
-        }
-    }
 }
 
 function createTripElement(trip) {
@@ -299,12 +262,6 @@ function createTripElement(trip) {
 
     content.appendChild(document.createElement("br"));
 
-    // // Task Details
-    // var description = document.createElement("label");
-    // description.innerHTML = trip.description;
-    // description.classList.add("taskDetails");
-    // content.appendChild(description);
-
     // Footer
     var bottomDiv = document.createElement("div");
     bottomDiv.classList.add("bottomBar");
@@ -321,24 +278,121 @@ function createTripElement(trip) {
     joinBtn.type = "button";
     joinBtn.classList.add("btnEmbed");
     joinBtn.value = "Join";
-    // joinBtn.addEventListener("click", doneTaskBtnClick);
+    joinBtn.addEventListener("click", joinTripBtnClick);
     bottomDiv.appendChild(joinBtn);
-
-    // // Delete Button
-    // var delBtn = document.createElement("input");
-    // delBtn.type = "button";
-    // delBtn.classList.add("btnEmbed");
-    // delBtn.value = "Delete";
-    // delBtn.onclick = deleteTaskBtnClick;
-    // bottomDiv.appendChild(delBtn);
-
-    // setTaskColor(trip);
 }
 
-/* --- Task Sorting Functions --- */
+function setCurrentTrip(id) { // Add an option for if the use has no trips
+    currentTripId = id;
+
+    console.log(trips);
+
+    // Remove old task elements
+    for (var i = 0; i < tasks.length; i++)
+        document.getElementById(tasks[i]._id).remove();
+
+    tripIndex = 0;
+    for (var i = 0; i < trips.length; i++) {
+        if (trips[i]._id == id) {
+            trip = trips[i];
+            tripIndex = i;
+        }
+    }
+
+    tasks = trip.tasks;
+
+    // Create new task elements
+    for (var i = 0; i < tasks.length; i++) {
+        tasks[i].date = new Date(tasks[i].date);
+        createTaskElement(tasks[i])
+    }
+
+    people = [];
+    for (var i = 0; i < userNames[tripIndex].length; i++) {
+        people.push(userNames[tripIndex][i].firstName);
+    }
+    
+    var assignSelector = document.getElementById("newTaskAssign");
+    // Remove all assign options
+    while (assignSelector.firstChild) assignSelector.removeChild(assignSelector.firstChild);
+    // Add assign options
+    for (var i = 0; i < people.length; i++) {
+        var opt = document.createElement("option");
+        opt.value = i;
+        opt.innerHTML = people[i];
+        assignSelector.appendChild(opt);
+    };
+
+    document.getElementById("currentTripTitle").innerHTML = trip.title;
+    document.body.style.backgroundImage = "url(/images/" + trip.region.replace(/ /g,'') + ".jpg)";
+
+    refreshTasks();
+}
+
+// Order the tasks according to the dropbox
+function refreshTasks(){
+    tasks = tasks.sort([compareTime, comparePriority, compareAssignment, compareDone][document.getElementById("orderBy").value]);
+    var mainDiv = document.getElementById("main");
+    tasks.forEach(t => {
+        mainDiv.appendChild(document.getElementById(t._id));
+    });
+
+    i = 0;
+    tasks.forEach(t => {if (!t.done) i++;});
+    document.getElementById("taskCount").innerHTML = "Task Count: " + tasks.length;
+    document.getElementById("tasksRemain").innerHTML = "Remaining Tasks: " + i;
+    document.getElementById("modTime").innerHTML = "Modified " + new Date().toLocaleString();
+}
+
+
+
+// Button click handlers ==============================================
+
+function doneTaskBtnClick(){
+    taskDiv = this.parentNode.parentNode;
+    doneTask(taskDiv.id);
+}
+
+function deleteTaskBtnClick(){
+    taskDiv = this.parentNode.parentNode;
+    deleteTask(taskDiv.id);
+}
+
+function joinTripBtnClick() {
+    toggleMatchDisplay();
+    joinTrip(this.parentNode.parentNode.id);
+}
+
+
+
+// Toggle 'Blanket' div displays ======================================
+
+function toggleAboutDisplay(){
+    var e = document.getElementById("aboutBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+function toggleSettingsDisplay(){
+    var e = document.getElementById("settingsBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+function toggleNewTripDisplay(){
+    var e = document.getElementById("newTripBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+function toggleMatchDisplay(){
+    var e = document.getElementById("matchBlanket");
+    e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
+}
+
+
+
+// Task Sorting Functions =============================================
 
 function compareTime(a, b){
-    return (a.done ? !b.done : b.done) ? (a.done ? 1 : -1) : (a.date > b.date ? -1 : a.date < b.date ? 1 : 0);
+    return (a.done ? !b.done : b.done) ? (a.done ? 1 : -1) : (a.date > b.date ? 1 : a.date < b.date ? -1 : 0);
 }
 
 function comparePriority(a, b){
@@ -355,7 +409,7 @@ function compareDone(a, b){
 
 
 
-/* --- Helpful Routines --- */
+// Helpful Routines ===================================================
 
 function setTaskColor(task) {
     document.getElementById(task._id).style.backgroundColor = task.done ? "lightgreen" : ["red", "white", "lightgray"][task.priority];
@@ -386,3 +440,24 @@ Date.prototype.toDateInputValue = (function() {
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
     return local.toJSON().slice(0,10);
 });
+
+
+
+// Vibrant.js
+
+// img.addEventListener('load', function() {
+//     var vibrant = new Vibrant(img);
+//     var swatches = vibrant.swatches()
+//     for (var swatch in swatches)
+//         if (swatches.hasOwnProperty(swatch) && swatches[swatch])
+//             console.log(swatch, swatches[swatch].getHex())
+
+//     /*
+//      * Results into:
+//      * Vibrant #7a4426
+//      * Muted #7b9eae
+//      * DarkVibrant #348945
+//      * DarkMuted #141414
+//      * LightVibrant #f3ccb4
+//      */
+// });
