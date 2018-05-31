@@ -20,8 +20,18 @@ block content
       div
         button#btnSettings.btnNav
           i.material-icons settings
-    #sideInfo
-      
+    div
+      if intro
+        label.sideInfo #{intro}
+      if tripName
+        h4.sideInfo Destinations
+        each trip in tripName
+          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
+            //- h5.sideInfo=name.title
+      if friendsNames
+        h4.sideInfo Friends
+        each friend in friendsNames
+          h4.sideInfo #{friend.firstName}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
@@ -36,11 +46,11 @@ block content
         option(value='2') Assignment
         option(value='3') Done
       
-    //- button#view.logout(href='/dash/logout') Logout
+    button#view.logout(href='/dash/logout') Logout
     
-    div.viewR
-      form(name='logout' action='dash/logout' method="POST")
-        input(type='submit' value='Logout')
+    //- div.viewR
+    //-   form(name='logout' action='dash/logout' method="POST")
+    //-     input(type='submit' value='Logout')
 
 
   #main
@@ -78,14 +88,18 @@ block content
       h2 Group Members
       p Eli Simic Robertson
       |  Studies Marketing major, completed majority of broadening units in Data Science.
+      br
       |  Enjoys Python & Automating things
-      |  Tim Wise 
+      
+      p  Tim Wise 
       |  Studies Math & Data Science
+      br
       |  Loves abstract thinking, especially difficult math that seems useless
-
-        Taige Lui
-        Studies Physics & Data Science
-        Enjoys playing Piano
+      
+      p  Taige Lui
+      |  Studies Physics & Data Science
+      br
+      |  Enjoys playing Piano
       h2 Matching Algorithm Explanation
       p Our matching algorithm matches users with similar preferences for the destinations in which they wish to travel. This is accomplished by using the aggregate operator on our Trip schema. Users can either select a region, country or city/state. City/state has the highest precedence in the algorithm (eg. If a user decides to select a city/state, the algorithm will search for city/state before matches of countries and so on.)
         |  The aggregation operation on the Trip schema allows the algorithm to make use of the $facet which splits the aggregation pipeline into, in our case four sub-pipelines. The sub-pipelines are as follows; city, country, region and global. All of these sub-pipelines have different weights in order to impose the precedence mentioned above. Note, the global pipeline returns any results if not enough matches meet the limit of ten.

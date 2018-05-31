@@ -29,8 +29,8 @@ app.use(session({
 
 
 
-// var dbURI = "mongodb://localhost:27017/oreoTravel"
-var dbURI = "mongodb://franticOreoMinion:lol@ds119350.mlab.com:19350/oreo_travel_db"
+var dbURI = "mongodb://localhost:27017/oreoTravel"
+// var dbURI = "mongodb://franticOreoMinion:lol@ds119350.mlab.com:19350/oreo_travel_db"
 
 
 mongoose.connect(dbURI, function (err,database) {
