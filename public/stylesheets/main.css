@@ -139,6 +139,15 @@ label {
     padding: 12px;
 }
 
+/* #main {
+    background-image: url(images/plane-loader-slower.gif);
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+} */
+
 #matchContent {
     max-height: 500px;
     overflow: auto;

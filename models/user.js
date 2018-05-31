@@ -59,8 +59,9 @@ UserSchema.statics.authenticate = function(email, password, callback) {
       if (error) {
         return callback(error);
       } else if ( !user ) {
+        return callback();
         // error.status = 401; // if error with mongoose query
-        return callback(error);
+        // return callback(error);
       }
       // comaare hashed password with plain text password
       // callback 'result' returns either true or false

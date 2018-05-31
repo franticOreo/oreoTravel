@@ -31,7 +31,44 @@ router.delete('/task/:tripId/:taskId', deleteTaskResponse);
 router.put('/task/:tripId/:taskId/:done', doneTaskResponse);
 
 // update trip with trip details
+<<<<<<< HEAD
 router.post('/addtrip', tripController.addTrip);
+=======
+router.post('/addtrip', function(req, res, next) {
+  // pushes new trip to Trip array
+
+  Trip.create({
+    users:req.session.userId,
+    title: req.body.tripName,
+    region: req.body.region,
+    country: req.body.country,
+    city: req.body.city_state
+  },
+  function(err, data) {
+    if (err) {
+      res.status = 500;
+      res.render('error', {
+        message: err.message
+      });
+    } else {
+    // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
+    var tripId = data._id;
+    User.update({_id:req.session.userId}, {$push: {trips: tripId}},
+      function(err, data) {
+        if (err) {
+          res.status = 500;
+          res.render('error', {
+            message: err.message
+          });
+        } else {
+          res.redirect('/dash')
+        }
+    // res.redirect('/dash')
+      })
+    }
+  });
+});
+>>>>>>> f4e2ee7fed6cb6a165e654a31bca6caa26f3fabc
 
 router.post('/joinTrip/:tripId', joinTripResponse);
 
@@ -156,8 +193,6 @@ function joinTrip(req) {
               console.log(err.message);
               reject();
             }
-            console.log(result);
-            console.log(result2);
             resolve(result2);
           }
         )
@@ -206,7 +241,7 @@ function addTask(req) {
             description: b.description,
             date: Date.parse(b.date),
             priority: b.priority,
-            assign: [req.session.userId], // <-- Change this to selectable at some point
+            assign: b.assign, // <-- Change this to selectable at some point
             done: b.done
           }
         }
@@ -289,13 +324,11 @@ function getMatchingTrips(req) {
       {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
       {$unwind: "$doc"},
       {$sort: {"doc.weight": 1}},
-      {$limit: 10}
-      // {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
+      {$limit: 10},
+      {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
     ])
     .exec(function (error, data) {
       if (error) throw error;
-      console.log(req.session.userId);
-      console.log(data);
       resolve(data);
     });
   })
