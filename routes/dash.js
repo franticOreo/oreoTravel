@@ -15,6 +15,12 @@ router.post('/', userController.verifyUser);
 // Render Dash
 router.get('/', renderDashResponse);
 
+// logout
+router.get('/logout', function (req, res, next) {
+  req.session.destroy();
+  res.redirect('/')
+})
+
 // Send list of trips with all releventant data
 router.get('/trips', getTripsResponse);
 
@@ -290,7 +296,7 @@ function getMatchingTrips(req) {
       {$unwind: "$doc"},
       {$sort: {"doc.weight": 1}},
       {$limit: 10}
-      // {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
+      {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
     ])
     .exec(function (error, data) {
       if (error) throw error;

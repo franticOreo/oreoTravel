@@ -1,4 +1,5 @@
 var Trip = require('../models/trip');
+var User = require('../models/user');
 
 module.exports.addTrip = function(req, res, next) {
   // pushes new trip to Trip array

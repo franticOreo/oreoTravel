@@ -38,7 +38,7 @@ nav {
     grid-template-columns: auto;
     grid-template-rows: min-content min-content auto min-content;
     background-color: var(--primary-color);
-}  
+}
 
 nav > div {
     margin: 24px;
@@ -159,7 +159,7 @@ label {
     background-color: var(--tertiary-color);
     padding: 12px;
     display: grid;
-    grid-template-columns: auto min-content;
+    grid-template-columns: auto min-content min-content;
     grid-template-rows: auto;
 }
 
@@ -172,15 +172,6 @@ label {
     overflow: auto;
     padding: 12px;
 }
-
-/* #main {
-    background-image: url(images/plane-loader-slower.gif);
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-} */
 
 #matchContent {
     max-height: 500px;
@@ -251,6 +242,10 @@ label {
 #newTaskDesc:empty::before {
     content: "Description";
     color: #555;
+}
+
+.bio {
+  line-height: 0px;
 }
 
 div.task {
@@ -407,6 +402,19 @@ input:required:invalid, input:focus:invalid {
     grid-gap: 24px;
     padding: 24px;
     width: 40%;
+    max-height: 80%;
+    margin: auto;
+    margin-top: 60px;
+    border-radius: 24px;
+    background-color: var(--light-color);
+    overflow: auto;
+}
+
+.aboutSpotlight {
+    display: grid;
+    grid-gap: 24px;
+    padding: 24px;
+    width: 60%;
     max-height: 80%;
     margin: auto;
     margin-top: 60px;
