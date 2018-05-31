@@ -51,7 +51,7 @@ router.post('/addtrip', function(req, res, next) {
   // pushes new trip to Trip array
 
   Trip.create({
-    users:req.session.userId, 
+    users:req.session.userId,
     title: req.body.tripName,
     region: req.body.region,
     country: req.body.country,
@@ -124,7 +124,7 @@ async function getTripsResponse(req, res, next) {
   for (var i = 0; i < trips.length; i++) {
     usersNames[i] = await loadUserNames(trips[i].users);
   }
-  
+
   res.type('json');
   res.send({trips: trips,  names: usersNames});
 }
@@ -217,8 +217,8 @@ function loadUserNames(users) {
   return new Promise((resolve, reject) => {
     if (users.length != 0) {
       User.find(
-        { _id: { $in: users } }, 
-        { firstName: 1, lastName: 1}, 
+        { _id: { $in: users } },
+        { firstName: 1, lastName: 1},
         (err, result) => {
           if (err) reject();
           resolve(result);
@@ -317,11 +317,11 @@ function getMatchingTrips(req) {
         $facet: {
           city: [
               {$match: {city: d.city_state}},
-              {$addFields: {weight: 0}} 
+              {$addFields: {weight: 0}}
           ],
           country: [
               {$match: {country: d.country, city: {$ne: d.city_state}}},
-              {$addFields: {weight: 1}}            
+              {$addFields: {weight: 1}}
           ],
           region: [
               {$match: {region: d.region, country: {$ne: d.country}}},

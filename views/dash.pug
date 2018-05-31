@@ -35,6 +35,14 @@ block content
         option(value='1') Priority
         option(value='2') Assignment
         option(value='3') Done
+      
+    //- button#view.logout(href='/dash/logout') Logout
+    
+    div.viewR
+      form(name='logout' action='dash/logout' method="POST")
+        input(type='submit' value='Logout')
+
+
   #main
     form#newTask.paper(action='/dash/addtask/' + selectedTrip method='POST')
       .wideGrid

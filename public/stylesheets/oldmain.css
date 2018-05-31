@@ -18,16 +18,11 @@ body {
     overflow: auto;
     display: grid;
     grid-template-columns: minmax(0px, 300px) minmax(100px, auto);
-    grid-template-rows: min-content auto 1fr 24px;
+    grid-template-rows: 60px auto 1fr 24px;
     margin: 0px;
     font-family: var(--body-font);
     margin: 0;
-    background-color: var(--secondary-color);
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
+    background-color: var(--secondary-color)
 }
 
 nav {
@@ -37,8 +32,8 @@ nav {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: min-content min-content auto min-content;
-    background-color: var(--primary-color);
-}  
+    background-color: var(--primary-color)
+}
 
 nav > div {
     margin: 24px;
@@ -124,12 +119,9 @@ label {
     position: relative;
     background-color: var(--tertiary-color);
     padding: 12px;
-    display: grid;
-    grid-template-columns: auto min-content;
-    grid-template-rows: auto;
 }
 
-#main, #matchContent {
+#main {
     position: relative;
     display: grid;
     min-height: 0px;
@@ -137,20 +129,6 @@ label {
     grid-template-rows: repeat(autofill, min-content);
     overflow: auto;
     padding: 12px;
-}
-
-/* #main {
-    background-image: url(images/plane-loader-slower.gif);
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-} */
-
-#matchContent {
-    max-height: 500px;
-    overflow: auto;
 }
 
 #infoBar {
@@ -163,7 +141,7 @@ label {
     padding: 6px 24px;
     margin: 0;
     display: grid;
-    grid-template-columns: auto min-content min-content min-content;
+    grid-template-columns: auto min-content min-content;
     grid-template-rows: auto;
     background-color: var(--light-color);
     border: 0 24px 0 24px var(--light-color);
@@ -373,12 +351,10 @@ input:required:invalid, input:focus:invalid {
     grid-gap: 24px;
     padding: 24px;
     width: 40%;
-    max-height: 80%;
     margin: auto;
-    margin-top: 60px;
+    margin-top: 120px;
     border-radius: 24px;
     background-color: var(--light-color);
-    overflow: auto;
 }
 
 .invert {
