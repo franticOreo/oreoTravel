@@ -40,7 +40,7 @@ window.onload = function() {
 // Global variables ===================================================
 
 var tasks = [];
-var people = [];
+var firstNames = [];
 var currentTripId;
 var tripIndex;
 var trips = [];
@@ -93,8 +93,10 @@ function addTask(id) {
         document.getElementById("newTaskDesc").innerHTML,
         document.getElementById("newTaskPriority").value,
         new Date(document.getElementById("newTaskDate").value),
-        userNames[tripIndex][document.getElementById("newTaskAssign").selectedIndex]._id
+        [userNames[tripIndex][document.getElementById("newTaskAssign").selectedIndex]._id]
     );
+
+    console.log(userNames[tripIndex][document.getElementById("newTaskAssign").selectedIndex]._id);
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
@@ -135,6 +137,11 @@ function handleTripsResponse() {
         var result = JSON.parse(this.responseText);
         trips = result.trips;
         userNames = result.names;
+
+        for (var i = 0; i < trips.length; i++) {
+            createSideTrip(i);
+        }
+
         if (trips[0]){
             setCurrentTrip(trips[0]._id);
         }
@@ -172,7 +179,61 @@ function handleMatchResponse() {
 
 
 
+// Button click handlers ==============================================
+
+function doneTaskBtnClick(){
+    taskDiv = this.parentNode.parentNode;
+    doneTask(taskDiv.id);
+}
+
+function deleteTaskBtnClick(){
+    taskDiv = this.parentNode.parentNode;
+    deleteTask(taskDiv.id);
+}
+
+function joinTripBtnClick() {
+    toggleMatchDisplay();
+    joinTrip(this.parentNode.parentNode.id);
+}
+
+
 // Dynamic content ====================================================
+
+function createSideTrip(tripNumber) {
+    trip = trips[tripNumber];
+
+    // Trip div
+    var tripDiv = document.createElement("div");
+    tripDiv.classList.add("sideTrip");
+    tripDiv.id = "side_" + trip._id;
+    tripDiv.onclick = "setCurrentTrip(" + trip._id + ")";
+
+    var mainDiv = document.getElementById("sideInfo");
+    mainDiv.appendChild(tripDiv);
+
+    // Title
+    var title = document.createElement("label");
+    title.innerHTML = trip.title;
+    title.classList.add("sideTitle");
+    tripDiv.appendChild(title);
+
+    // Expand div
+    var expandDiv = document.createElement("div");
+    expandDiv.classList.add("sideTrip");
+    expandDiv.id = trip._id;
+    tripDiv.appendChild(expandDiv);
+
+    // Users
+    var user;
+    var people = userNames[tripNumber];
+
+    for (var i = 0; i < people.length; i++) {
+        user = document.createElement("li");
+        user.innerHTML = people[i].firstName + " " + people[i].lastName;
+        user.classList.add("sideUser");
+        expandDiv.appendChild(user);
+    }
+}
 
 function createTaskElement(task){
     var taskDiv = document.createElement("div");
@@ -307,19 +368,19 @@ function setCurrentTrip(id) { // Add an option for if the use has no trips
         createTaskElement(tasks[i])
     }
 
-    people = [];
+    firstNames = [];
     for (var i = 0; i < userNames[tripIndex].length; i++) {
-        people.push(userNames[tripIndex][i].firstName);
+        firstNames.push(userNames[tripIndex][i].firstName);
     }
     
     var assignSelector = document.getElementById("newTaskAssign");
     // Remove all assign options
     while (assignSelector.firstChild) assignSelector.removeChild(assignSelector.firstChild);
     // Add assign options
-    for (var i = 0; i < people.length; i++) {
+    for (var i = 0; i < firstNames.length; i++) {
         var opt = document.createElement("option");
         opt.value = i;
-        opt.innerHTML = people[i];
+        opt.innerHTML = firstNames[i];
         assignSelector.appendChild(opt);
     };
 
@@ -342,25 +403,6 @@ function refreshTasks(){
     document.getElementById("taskCount").innerHTML = "Task Count: " + tasks.length;
     document.getElementById("tasksRemain").innerHTML = "Remaining Tasks: " + i;
     document.getElementById("modTime").innerHTML = "Modified " + new Date().toLocaleString();
-}
-
-
-
-// Button click handlers ==============================================
-
-function doneTaskBtnClick(){
-    taskDiv = this.parentNode.parentNode;
-    doneTask(taskDiv.id);
-}
-
-function deleteTaskBtnClick(){
-    taskDiv = this.parentNode.parentNode;
-    deleteTask(taskDiv.id);
-}
-
-function joinTripBtnClick() {
-    toggleMatchDisplay();
-    joinTrip(this.parentNode.parentNode.id);
 }
 
 

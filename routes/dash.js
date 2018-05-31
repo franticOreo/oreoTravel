@@ -74,7 +74,6 @@ router.post('/addtrip', function(req, res, next) {
             message: err.message
           });
         } else {
-          console.log(data, 'saved');
           res.redirect('/dash')
         }
     // res.redirect('/dash')
@@ -206,8 +205,6 @@ function joinTrip(req) {
               console.log(err.message);
               reject();
             }
-            console.log(result);
-            console.log(result2);
             resolve(result2);
           }
         )
@@ -256,7 +253,7 @@ function addTask(req) {
             description: b.description,
             date: Date.parse(b.date),
             priority: b.priority,
-            assign: [req.session.userId], // <-- Change this to selectable at some point
+            assign: b.assign, // <-- Change this to selectable at some point
             done: b.done
           }
         }
@@ -339,13 +336,11 @@ function getMatchingTrips(req) {
       {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
       {$unwind: "$doc"},
       {$sort: {"doc.weight": 1}},
-      {$limit: 10}
-      // {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
+      {$limit: 10},
+      {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
     ])
     .exec(function (error, data) {
       if (error) throw error;
-      console.log(req.session.userId);
-      console.log(data);
       resolve(data);
     });
   })
