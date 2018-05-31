@@ -14,6 +14,8 @@ window.onload = function() {
 
     document.getElementById("newTaskDesc").innerHTML = "";
 
+    this.document.getElementById("addTaskCover").addEventListener("click", toggleNewTask);
+
     this.document.getElementById("aboutBtnDash").addEventListener("click", toggleAboutDisplay);
     this.document.getElementById("aboutBlanket").addEventListener("click", function(e){
         if (!document.getElementById("aboutPage").contains(e.target)) toggleAboutDisplay();
@@ -157,6 +159,7 @@ function handleJoinTripResponse() {
 
 function handleTaskResponse() {
     if (this.readyState == 4 && this.status == 200) {
+        toggleNewTask();
         var t = JSON.parse(this.responseText);
         for (var i = 0; i < trips.length; i++) {
             if (trips[i]._id == currentTripId) {
@@ -414,7 +417,7 @@ function refreshTasks(){
 
 
 
-// Toggle 'Blanket' div displays ======================================
+// Toggles ============================================================
 
 function toggleAboutDisplay(){
     var e = document.getElementById("aboutBlanket");
@@ -436,7 +439,19 @@ function toggleMatchDisplay(){
     e.style.display == "none" ? e.style.display = "block" : e.style.display = "none";
 }
 
+function toggleNewTask() {
+    var content = document.getElementById("addTaskContent");
+    var cover = document.getElementById("addTaskCover");
 
+    if (content.style.display == "none") {
+        content.style.display = "grid";
+        cover.style.display = "none";
+    }
+    else {
+        content.style.display = "none";
+        cover.style.display = "block";
+    }
+}
 
 // Task Sorting Functions =============================================
 

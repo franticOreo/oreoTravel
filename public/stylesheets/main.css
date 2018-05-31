@@ -218,14 +218,23 @@ label {
 }
 
 #newTask {
+    position: relative;
+    border-radius: 6px;
+    background-color: var(--light-color);
+}
+
+#addTaskContent {
+    padding: 12px;
     display: grid;
     grid-gap: 12px;
     grid-template-columns: min-content min-content auto;
     grid-template-rows: repeat(auto-fill, min-content);
-    position: relative;
-    padding: 12px;
-    border-radius: 6px;
-    background-color: var(--light-color);
+}
+
+#addTaskCover {
+    padding: 6px;
+    text-align: center;
+    font-size: 20px;
 }
 
 .wideGrid {

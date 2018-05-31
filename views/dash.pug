@@ -18,7 +18,7 @@ block content
         button#btnNewTrip.btnNav
           i.material-icons add
       div
-        button#btnSettings.btnNav
+        button#btnSettings.btnNav(style="display: none;")
           i.material-icons settings
     #sideInfo
     div
@@ -43,30 +43,32 @@ block content
 
   #main
     form#newTask.paper(action='/dash/addtask/' + selectedTrip method='POST')
-      .wideGrid
-        input#newTaskName.flatinput(type='text' name='name' placeholder='New Task')
-      .wideGrid
-        #newTaskDesc.flatinput(contenteditable='true' name='description' placeholder='Decription')
-      div
-        label(for='newTaskDate') Due Date
-        br
-        input#newTaskDate.flat(type='date' name='date')
-      div
-        label(for='newTaskPriority') Priority
-        br
-        select(name='priority')#newTaskPriority.flat
-          option(value='0') High
-          option(value='1' selected='selected') Medium
-          option(value='2') Optional
-      div
-        label(for='newTaskAssign') Assign
-        br
-        select(name='assign')#newTaskAssign.flat
-      .wideGrid
-        if tripName[0]
-          input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask(\"' + tripName[0]._id + '\");')
-        else
-          input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask();')
+      #addTaskContent(style='display: none;')
+        .wideGrid
+          input#newTaskName.flatinput(type='text' name='name' placeholder='New Task')
+        .wideGrid
+          #newTaskDesc.flatinput(contenteditable='true' name='description' placeholder='Decription')
+        div
+          label(for='newTaskDate') Due Date
+          br
+          input#newTaskDate.flat(type='date' name='date')
+        div
+          label(for='newTaskPriority') Priority
+          br
+          select(name='priority')#newTaskPriority.flat
+            option(value='0') High
+            option(value='1' selected='selected') Medium
+            option(value='2') Optional
+        div
+          label(for='newTaskAssign') Assign
+          br
+          select(name='assign')#newTaskAssign.flat
+        .wideGrid
+          if tripName[0]
+            input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask(\"' + tripName[0]._id + '\");')
+          else
+            input#addTaskBtn.btnEmbed(type='button' value='Add Task' onclick='addTask();')
+      #addTaskCover +
   #infoBar.paper
     label#taskCount.info
     label#tasksRemain.info
@@ -108,6 +110,7 @@ block content
       br
       br
       h2 Heroku Instructions
+      a(href="https://dashboard.heroku.com/apps/still-lake-64912" target="_blank") Heruko Website
       
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
