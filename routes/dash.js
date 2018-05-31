@@ -28,54 +28,6 @@ router.post('/', function(req, res, next) {
   }
 });
 
-<<<<<<< HEAD
-router.post('/logout', function(req, res, next) {
-  req.session.destroy();
-  return res.redirect('/')
-})
-
-function findUserFriends(destType, prefferredDest) {
-  return new Promise((resolve, reject) => {
-    User.find({destType: prefferredDest}, {firstName: 1, _id: 0},
-    (err, data) => {
-      if (err) reject(); // PROBS NEED BETTER ERROR HANDLER
-      console.log(data);
-      resolve(data);
-      }
-    )
-
-  })
-}
-
-// preferences from sign up form
-// dash : new trip OR search existing trips
-// Search for existing trips through trip Schema
-//
-
-// { region , country , city_state}
-async  function SearchForFriends(req, res, next) {
-
-    if (req.session.prefferedDest.city_state === "") {
-        if (req.session.prefferedDest.country === "") {
-          req.session.dest = req.session.prefferedDest.region
-        }
-        else {
-          req.session.dest = req.session.prefferedDest.country
-        }
-    }
-    else {
-      req.session.dest = req.session.prefferedDest.city_state
-      // city state is not null so find through User Schema
-      // var friendsNames = await findUserFriends("city_state",req.session.prefferedDest.city_state)
-
-      // console.log(friendsNames);
-
-      Trip.aggregate([{$match: {"city_state":"Algiers"}, cursor:{}}],
-      (err, data) => {
-        if (err) return err; // PROBS NEED BETTER ERROR HANDLER
-        console.log(data);
-        })
-=======
 // function findUserFriends(destinationType, prefferredDest) {
 //   return new Promise((resolve, reject) => {
 //     User.find({destinationType: prefferredDest}, {firstName: 1, _id: 0},
@@ -88,6 +40,11 @@ async  function SearchForFriends(req, res, next) {
 
 //   })
 // }
+
+router.get('/logout', function (req, res, next) {
+  req.session.destroy;
+  res.redirect('/');
+})
 
 router.get('/search', SearchForFriends);
   // console.log(req.session.prefferedDest.city_state === "")
@@ -154,66 +111,43 @@ async  function SearchForFriends(req, res, next) {
       // get users prefferred destination
       // from UserSchema
       // check if city_state empty if check country ...
->>>>>>> d02d4922db1ca799fd2acbc7942c16c89663b445
 
 
-      res.render('dash', {tripName: []})
-        // var tasks = await loadTasks(req.params['tripId']);
-    }
-    console.log(req.session.dest)
-    // get users prefferred destination
-    // from UserSchema
-    // check if city_state empty if check country ...
 
-    // search through User Schema for Country > region
+      // search through User Schema for Country > region
 
 }
-router.get('/find-users', SearchForFriends)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d02d4922db1ca799fd2acbc7942c16c89663b445
 // GET /Dash
 // Check if user is authenticated
 // ifso respond with main Dash
 
 // return root of dash if user has no trip
 // else respond with first tripId root
-router.get('/', renderAll);
+router.get('/', renderDashResponse);
 
-<<<<<<< HEAD
-// make routes for each destination to show select tasks
-// the route parameter will be the id of the destination
-// the post request will come from links in the destination list
-// it will use dash view with objects from the task object inside project object
-router.get('/:tripId', getTasksResponse);
-=======
 router.get('/trips', getTripsResponse);
 
 // Load the tasks for a trip
 router.get('/task/:tripId', getTasksResponse);
->>>>>>> d02d4922db1ca799fd2acbc7942c16c89663b445
 
-async function getTasksResponse(req, res, next) {
-  var tasks = await loadTasks(req.params['tripId']);
-  console.log(tasks);
-  res.type('json');
-  res.send(tasks);
-}
+// Add a task to a trip
+router.post('/task/:tripId', addTaskResponse);
 
 router.delete('/task/:tripId/:taskId', deleteTaskResponse);
 router.put('/task/:tripId/:taskId/:done', doneTaskResponse);
 
 // update trip with trip details
-// how to tell parent which children are there own?
 router.post('/addtrip', function(req, res, next) {
   // pushes new trip to Trip array
 
-  Trip.create({users:req.session.userId, title: req.body.tripName,
-      region: req.body.region,
-      country: req.body.country,
-      city: req.body.city_state},
+  Trip.create({
+    users:req.session.userId,
+    title: req.body.tripName,
+    region: req.body.region,
+    country: req.body.country,
+    city: req.body.city_state
+  },
   function(err, data) {
     if (err) {
       res.status = 500;
@@ -221,20 +155,20 @@ router.post('/addtrip', function(req, res, next) {
         message: err.message
       });
     } else {
-      // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
-      var tripId = data._id;
-      User.update({_id:req.session.userId}, {$push: {trips: tripId}},
-        function(err, data) {
-          if (err) {
-            res.status = 500;
-            res.render('error', {
-              message: err.message
-            });
-          } else {
-            console.log(data, 'saved');
-            res.redirect('/dash')
-          }
-      // res.redirect('/dash')
+    // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
+    var tripId = data._id;
+    User.update({_id:req.session.userId}, {$push: {trips: tripId}},
+      function(err, data) {
+        if (err) {
+          res.status = 500;
+          res.render('error', {
+            message: err.message
+          });
+        } else {
+          console.log(data, 'saved');
+          res.redirect('/dash')
+        }
+    // res.redirect('/dash')
       })
     }
   });
@@ -258,8 +192,17 @@ async function renderDashResponse(req, res, next) {
         taskList = trips[i].tasks;
       }
     }
-  );
-});
+  }
+
+  // Render - last
+  return res.render('dash', {
+    title: 'Logged In',
+    tripName: trips,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    selectedTrip: req.params['tripId']
+  });
+}
 
 async function getTripsResponse(req, res, next) {
   var user = await loadUser(req.session.userId);
@@ -274,8 +217,11 @@ async function getTasksResponse(req, res, next) {
   res.send(tasks);
 }
 
-  res.send("Hello, World!");
-})
+async function addTaskResponse(req, res, next) {
+  // await Trip.remove({});
+  await addTask(req);
+  getTasksResponse(req, res, next);
+}
 
 async function deleteTaskResponse(req, res, next) {
   await deleteTask(req);
@@ -351,23 +297,8 @@ function addTask(req) {
         if (err) reject();
         resolve();
       }
-    }
-  }
-
-
-  console.log(req.params['tripId']);
-  console.log(taskList);
-  // console.log(trips);
-
-
-  // Render - last
-  return res.render('dash', {
-    title: 'Logged In',
-    tripName: trips,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    selectedTrip: req.params['tripId']
-  });
+    );
+  })
 }
 
 function deleteTask(req) {
@@ -416,8 +347,6 @@ function doneTask(req) {
 }
 
 module.exports = router
-
-
 
 // make routes for each destination to show select tasks
 // the route parameter will be the id of the destination
