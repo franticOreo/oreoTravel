@@ -1,6 +1,6 @@
 var User = require('../models/user');
 
-function createUser(req, res, next) {
+module.exports.createUser = function createUser(req, res, next) {
   if (req.body.firstName,
       req.body.lastName,
       req.body.password,
@@ -40,4 +40,25 @@ function createUser(req, res, next) {
 
 }
 
-module.exports = createUser
+module.exports.verifyUser = function(req, res, next) {
+  if (req.body.email && req.body.password) {
+    User.authenticate(req.body.email, req.body.password, function(error, user) {
+      if (error || !user) {
+        var err = new Error('Wrong email or password.');
+        err.status = 401;
+        return next(err);
+      } else {
+        req.session.userId = user._id; // create session with mongo user id
+        req.session.prefferedDest = {region:user.region, country:user.country, city_state:user.city_state}
+
+        return res.redirect('/dash');
+      }
+    });
+  } else {
+    var err = new Error('Email and password required')
+    err.status = 400;
+    return next(err);
+  }
+}
+
+// module.exports = createUser

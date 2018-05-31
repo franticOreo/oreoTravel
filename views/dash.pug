@@ -20,8 +20,18 @@ block content
       div
         button#btnSettings.btnNav
           i.material-icons settings
-    #sideInfo
-      
+    div
+      if intro
+        label.sideInfo #{intro}
+      if tripName
+        h4.sideInfo Destinations
+        each trip in tripName
+          li(onclick='setCurrentTrip(\"' + trip._id + '\");').label.sideInfo #{trip.title}
+            //- h5.sideInfo=name.title
+      if friendsNames
+        h4.sideInfo Friends
+        each friend in friendsNames
+          h4.sideInfo #{friend.firstName}
     div
       input#aboutBtnDash.btn.invert2(type='button' value='About')
   #view.paper
@@ -36,11 +46,11 @@ block content
         option(value='2') Assignment
         option(value='3') Done
       
-    //- button#view.logout(href='/dash/logout') Logout
+    button#view.logout(href='/dash/logout') Logout
     
-    div.viewR
-      form(name='logout' action='dash/logout' method="POST")
-        input(type='submit' value='Logout')
+    //- div.viewR
+    //-   form(name='logout' action='dash/logout' method="POST")
+    //-     input(type='submit' value='Logout')
 
 
   #main
@@ -75,8 +85,31 @@ block content
     label#modTime.info
   #aboutBlanket.blanket(style='display: none;')
     #aboutPage.spotlight
-      h2 About
-      p #{About}
+      h2 Group Members
+      p Eli Simic Robertson
+      |  Studies Marketing major, completed majority of broadening units in Data Science.
+      br
+      |  Enjoys Python & Automating things
+      
+      p  Tim Wise 
+      |  Studies Math & Data Science
+      br
+      |  Loves abstract thinking, especially difficult math that seems useless
+      
+      p  Taige Lui
+      |  Studies Physics & Data Science
+      br
+      |  Enjoys playing Piano
+      h2 Matching Algorithm Explanation
+      p Our matching algorithm matches users with similar preferences for the destinations in which they wish to travel. This is accomplished by using the aggregate operator on our Trip schema. Users can either select a region, country or city/state. City/state has the highest precedence in the algorithm (eg. If a user decides to select a city/state, the algorithm will search for city/state before matches of countries and so on.)
+        |  The aggregation operation on the Trip schema allows the algorithm to make use of the $facet which splits the aggregation pipeline into, in our case four sub-pipelines. The sub-pipelines are as follows; city, country, region and global. All of these sub-pipelines have different weights in order to impose the precedence mentioned above. Note, the global pipeline returns any results if not enough matches meet the limit of ten.
+        |  Finally, all sub-pipeline results are returned into separate arrays, they are concatenated and then projected into a readable form for the user.
+      h2 Architecture and Design Choices
+      p Initially, our group decided to take a overall bottom-up approach to the design process. As we were new to these frameworks and even Javascript, we thought taking a top down approach would be difficult to execute. So we set small goals (eg. display users info when logged in) then we built on top of these goals.
+        |  We used the given projects on CITS5504 website and other tutorials to base our user validation and the general routing around the application. However, we found that using a lot of routes without Angular was creating a lot of page refreshes, so we decided to use Ajax to create a more seamless user experience.
+        |  The design for our matching algorithm came relatively naturally, however implementing it was far more difficult. We found inconsistencies with different responses from using the mongo shell and using mongo inside of Node.js.
+        |  Another difficulty was separating the workflow, as we went for a bottom-up approach each stage was heavily reliant on the prior. We found at times, this meant a group member could only work on the project at a time. This was obviously, very efficient and required better planning.
+        |  Overall, the MEAN stack seems to be a relatively easy architecture to use considering it is all javascript. However, compared to a lot of other Computer Science/Data Science units there was a lot of content to learn. We would argue the content was not to difficult to comprehend rather the volume of content at times was overwhelming. Ultimately, this is a very powerful technology with vast applications and it has been an overall enjoyable experience. 
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
       h2 Settings

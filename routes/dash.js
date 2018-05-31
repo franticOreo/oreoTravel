@@ -2,31 +2,15 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
 var Trip = require('../models/trip');
+var userController = require('../controllers/user')
+var tripController = require('../controllers/trip')
+
 
 // POST login
 // When User Logins In from index
 // Check for correct credentials
 // if correct create a session ID with userID from mongo
-router.post('/', function(req, res, next) {
-  if (req.body.email && req.body.password) {
-    User.authenticate(req.body.email, req.body.password, function(error, user) {
-      if (error || !user) {
-        var err = new Error('Wrong email or password.');
-        err.status = 401;
-        return next(err);
-      } else {
-        req.session.userId = user._id; // create session with mongo user id
-        req.session.prefferedDest = {region:user.region, country:user.country, city_state:user.city_state}
-
-        return res.redirect('/dash');
-      }
-    });
-  } else {
-    var err = new Error('Email and password required')
-    err.status = 400;
-    return next(err);
-  }
-});
+router.post('/', userController.verifyUser);
 
 // Render Dash
 router.get('/', renderDashResponse);
@@ -47,40 +31,7 @@ router.delete('/task/:tripId/:taskId', deleteTaskResponse);
 router.put('/task/:tripId/:taskId/:done', doneTaskResponse);
 
 // update trip with trip details
-router.post('/addtrip', function(req, res, next) {
-  // pushes new trip to Trip array
-
-  Trip.create({
-    users:req.session.userId,
-    title: req.body.tripName,
-    region: req.body.region,
-    country: req.body.country,
-    city: req.body.city_state
-  },
-  function(err, data) {
-    if (err) {
-      res.status = 500;
-      res.render('error', {
-        message: err.message
-      });
-    } else {
-    // req.session.tripId = data._id; NOT SURE IF SHOULD BE STORED IN SESH
-    var tripId = data._id;
-    User.update({_id:req.session.userId}, {$push: {trips: tripId}},
-      function(err, data) {
-        if (err) {
-          res.status = 500;
-          res.render('error', {
-            message: err.message
-          });
-        } else {
-          res.redirect('/dash')
-        }
-    // res.redirect('/dash')
-      })
-    }
-  });
-});
+router.post('/addtrip', tripController.addTrip);
 
 router.post('/joinTrip/:tripId', joinTripResponse);
 
@@ -205,6 +156,8 @@ function joinTrip(req) {
               console.log(err.message);
               reject();
             }
+            console.log(result);
+            console.log(result2);
             resolve(result2);
           }
         )
@@ -253,7 +206,7 @@ function addTask(req) {
             description: b.description,
             date: Date.parse(b.date),
             priority: b.priority,
-            assign: b.assign, // <-- Change this to selectable at some point
+            assign: [req.session.userId], // <-- Change this to selectable at some point
             done: b.done
           }
         }
@@ -336,11 +289,13 @@ function getMatchingTrips(req) {
       {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
       {$unwind: "$doc"},
       {$sort: {"doc.weight": 1}},
-      {$limit: 10},
-      {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
+      {$limit: 10}
+      // {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
     ])
     .exec(function (error, data) {
       if (error) throw error;
+      console.log(req.session.userId);
+      console.log(data);
       resolve(data);
     });
   })

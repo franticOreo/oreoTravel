@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
-var createUser = require('../controllers/createUser')
+var userController = require('../controllers/user')
 
 router.get('/', function(req, res, next) {
 
@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
 // POST when Sign In form is completed
 // if successful redirects user to Signed Up dash (/welcome)
 // SUGGESTION: Add Welcome Message: Welcome to oreoTravel!!!
-router.post('/', createUser);
+router.post('/', userController.createUser);
 
 
 module.exports = router;
