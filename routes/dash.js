@@ -15,6 +15,12 @@ router.post('/', userController.verifyUser);
 // Render Dash
 router.get('/', renderDashResponse);
 
+// logout
+router.get('/logout', function (req, res, next) {
+  req.session.destroy();
+  res.redirect('/')
+})
+
 // Send list of trips with all releventant data
 router.get('/trips', getTripsResponse);
 

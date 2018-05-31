@@ -46,11 +46,11 @@ block content
         option(value='2') Assignment
         option(value='3') Done
       
-    button#view.logout(href='/dash/logout') Logout
+    //- button#view.logout(href='/dash/logout') Logout
     
-    //- div.viewR
-    //-   form(name='logout' action='dash/logout' method="POST")
-    //-     input(type='submit' value='Logout')
+    div.viewR
+      form(name='logout' method="get" action="dash/logout")
+        input(type='submit' value='Logout')
 
 
   #main
@@ -84,19 +84,24 @@ block content
     label#tasksRemain.info
     label#modTime.info
   #aboutBlanket.blanket(style='display: none;')
-    #aboutPage.spotlight
+    #aboutPage.aboutSpotlight
       h2 Group Members
-      p Eli Simic Robertson
+      | Eli Simic Robertson
+      br
       |  Studies Marketing major, completed majority of broadening units in Data Science.
       br
-      |  Enjoys Python & Automating things
-      
-      p  Tim Wise 
+      |  Enjoys Python & Automating things 
+      br
+      br
+      |  Tim Wise
+      br 
       |  Studies Math & Data Science
       br
+      br
       |  Loves abstract thinking, especially difficult math that seems useless
-      
-      p  Taige Lui
+      br      
+      | Taige Lui
+      br
       |  Studies Physics & Data Science
       br
       |  Enjoys playing Piano
@@ -110,6 +115,12 @@ block content
         |  The design for our matching algorithm came relatively naturally, however implementing it was far more difficult. We found inconsistencies with different responses from using the mongo shell and using mongo inside of Node.js.
         |  Another difficulty was separating the workflow, as we went for a bottom-up approach each stage was heavily reliant on the prior. We found at times, this meant a group member could only work on the project at a time. This was obviously, very efficient and required better planning.
         |  Overall, the MEAN stack seems to be a relatively easy architecture to use considering it is all javascript. However, compared to a lot of other Computer Science/Data Science units there was a lot of content to learn. We would argue the content was not to difficult to comprehend rather the volume of content at times was overwhelming. Ultimately, this is a very powerful technology with vast applications and it has been an overall enjoyable experience. 
+      //- h2 Git Hub Repository
+      a(href="https://github.com/franticOreo/oreoTravel" target="_blank") Git Hub Repo
+      br
+      br
+      h2 Heroku Instructions
+      
   #settingsBlanket.blanket(style='display: none;')
     #settingsPage.spotlight
       h2 Settings
