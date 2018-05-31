@@ -27,8 +27,7 @@ block content
     div
       h3#currentTripTitle
     div
-      label(for='orderBy') Order By
-      br
+      //- label.centerText(for='orderBy') Order By
       select#orderBy.flat(onchange='refreshTasks();')
         option(value='0') Date
         option(value='1') Priority
@@ -37,9 +36,9 @@ block content
       
     //- button#view.logout(href='/dash/logout') Logout
     
-    div.viewR
+    div
       form(name='logout' method="get" action="dash/logout")
-        input(type='submit' value='Logout')
+        input#logout.flat(type='submit' value='Logout')
 
 
   #main
