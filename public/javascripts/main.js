@@ -87,7 +87,7 @@ function joinTrip(id) {
     xhttp.send();
 }
 
-function addTask(id) {
+function addTask() {
     var t = new tripObject(
         document.getElementById("newTaskName").value,
         document.getElementById("newTaskDesc").innerHTML,
@@ -100,7 +100,7 @@ function addTask(id) {
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = handleTaskResponse;
-    xhttp.open("POST", "/dash/task/" + id, true);
+    xhttp.open("POST", "/dash/task/" + currentTripId, true);
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send(JSON.stringify(t));
 }
@@ -149,10 +149,8 @@ function handleTripsResponse() {
 }
 
 function handleJoinTripResponse() {
-    document.body.style.cursor='wait';
     getTrips();
     getMatches();
-    document.body.style.cursor='default';
 }
 
 function handleTaskResponse() {
@@ -220,7 +218,7 @@ function createSideTrip(tripNumber) {
     // Expand div
     var expandDiv = document.createElement("div");
     expandDiv.classList.add("sideTrip");
-    expandDiv.id = trip._id;
+    expandDiv.id = "side_expand_" + trip._id;
     tripDiv.appendChild(expandDiv);
 
     // Users
