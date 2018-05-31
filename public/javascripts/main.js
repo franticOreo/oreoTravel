@@ -138,6 +138,8 @@ function handleTripsResponse() {
         trips = result.trips;
         userNames = result.names;
 
+        document.getElementById("sideInfo").removeAllChildren();
+
         for (var i = 0; i < trips.length; i++) {
             createSideTrip(i);
         }
@@ -194,6 +196,12 @@ function joinTripBtnClick() {
     joinTrip(this.parentNode.parentNode.id);
 }
 
+function sideTripClick() {
+    var id = this.id.split("_");
+    setCurrentTrip(id[id.length-1]);
+}
+
+
 
 // Dynamic content ====================================================
 
@@ -203,21 +211,22 @@ function createSideTrip(tripNumber) {
     // Trip div
     var tripDiv = document.createElement("div");
     tripDiv.classList.add("sideTrip");
+    tripDiv.classList.add("paper");
     tripDiv.id = "side_" + trip._id;
-    tripDiv.onclick = "setCurrentTrip(" + trip._id + ")";
+    tripDiv.addEventListener("click", sideTripClick);
 
     var mainDiv = document.getElementById("sideInfo");
     mainDiv.appendChild(tripDiv);
 
     // Title
-    var title = document.createElement("label");
+    var title = document.createElement("h4");
     title.innerHTML = trip.title;
     title.classList.add("sideTitle");
     tripDiv.appendChild(title);
 
     // Expand div
     var expandDiv = document.createElement("div");
-    expandDiv.classList.add("sideTrip");
+    // expandDiv.classList.add("sideTrip");
     expandDiv.id = "side_expand_" + trip._id;
     tripDiv.appendChild(expandDiv);
 
@@ -473,6 +482,12 @@ function dateToFullAussieString(d){
 // Add a delete function for elements
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
+}
+
+// Remove 
+Element.prototype.removeAllChildren = function() {
+    while (this.firstChild)
+        this.removeChild(this.firstChild);
 }
 
 Date.prototype.toDateInputValue = (function() {
