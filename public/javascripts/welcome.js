@@ -12,7 +12,7 @@ window.onload = function(){
         if (!document.getElementById("aboutPage").contains(e.target)) toggleAboutDisplay();
     });
     
-    var countries = ["Africa", "Antartica", "Asia", "Australia-Oceania", "Caribean", "Central America", "Europe", "Islands", "Middle East", "North America", "South America"]
+    var countries = ["Africa", "Antarctica", "Asia", "Australia-Oceania", "Caribean", "CentralAmerica", "Europe", "Islands", "MiddleEast", "NorthAmerica", "SouthAmerica"]
     document.body.style.backgroundImage = "url(/images/" + countries[Math.floor(Math.random()*countries.length)] + ".jpg)";
 }
 

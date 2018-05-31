@@ -28,104 +28,10 @@ router.post('/', function(req, res, next) {
   }
 });
 
-// function findUserFriends(destinationType, prefferredDest) {
-//   return new Promise((resolve, reject) => {
-//     User.find({destinationType: prefferredDest}, {firstName: 1, _id: 0},
-//     (err, data) => {
-//       if (err) reject(); // PROBS NEED BETTER ERROR HANDLER
-//       resolve(data);
-
-//       }
-//     )
-
-//   })
-// }
-
-router.get('/logout', function (req, res, next) {
-  req.session.destroy;
-  res.redirect('/');
-})
-
-router.get('/search', SearchForFriends);
-  // console.log(req.session.prefferedDest.city_state === "")
-
-function getMatchingTrips(req) {
-  return new Promise((resolve, reject) => {
-    var d = req.session.prefferedDest;
-    Trip.aggregate([
-      {
-        $facet: {
-          city: [
-              {$match: {city: d.city_state}},
-              {$addFields: {weight: 0}}
-          ],
-          country: [
-              {$match: {country: d.country, city: {$ne: d.city_state}}},
-              {$addFields: {weight: 1}}
-          ],
-          region: [
-              {$match: {region: d.region, country: {$ne: d.country}}},
-              {$addFields: {weight: 2}}
-          ],
-          global: [
-            {$match: {region: {$ne: d.region}}},
-            {$addFields: {weight: 3}}
-          ]
-        }
-      },
-      {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
-      {$unwind: "$doc"},
-      {$sort: {"doc.weight": 1}},
-      {$limit: 10},
-      {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
-    ])
-    .exec(function (error, data) {
-      if (error) throw error;
-      resolve(data);
-    });
-  })
-}
-
-  // { region , country , city_state}
-async  function SearchForFriends(req, res, next) {
-    var trips = await getMatchingTrips(req);
-    res.send(trips);
-
-      // if (req.session.prefferedDest.city_state === "") {
-      //     if (req.session.prefferedDest.country === "") {
-      //       req.session.dest = req.session.prefferedDest.region
-      //     }
-      //     else {
-      //       req.session.dest = req.session.prefferedDest.country
-      //     }
-      // }
-      // else {
-      //   req.session.dest = req.session.prefferedDest.city_state
-      //   // city state is not null so find through User Schema
-      //   var friendsNames = findUserFriends("city_state", req.session.prefferedDest.city_state)
-      //   res.render('dash', {friendsNames:friendsNames})
-      //     // var tasks = await loadTasks(req.params['tripId']);
-
-      // }
-      // console.log(req.session.dest)
-      // get users prefferred destination
-      // from UserSchema
-      // check if city_state empty if check country ...
-
-
-
-      // search through User Schema for Country > region
-
-}
-
-// GET /Dash
-// Check if user is authenticated
-// ifso respond with main Dash
-
-// return root of dash if user has no trip
-// else respond with first tripId root
+// Render Dash
 router.get('/', renderDashResponse);
 
+// Send list of trips with all releventant data
 router.get('/trips', getTripsResponse);
 
 // Load the tasks for a trip
@@ -134,7 +40,10 @@ router.get('/task/:tripId', getTasksResponse);
 // Add a task to a trip
 router.post('/task/:tripId', addTaskResponse);
 
+// Delete a task
 router.delete('/task/:tripId/:taskId', deleteTaskResponse);
+
+// Done/Undo a task
 router.put('/task/:tripId/:taskId/:done', doneTaskResponse);
 
 // update trip with trip details
@@ -174,6 +83,10 @@ router.post('/addtrip', function(req, res, next) {
   });
 });
 
+router.post('/joinTrip/:tripId', joinTripResponse);
+
+router.get('/search', SearchForTripsReponse);
+
 //
 // Response Functions -------------------------------------------------------------------------
 //
@@ -207,8 +120,14 @@ async function renderDashResponse(req, res, next) {
 async function getTripsResponse(req, res, next) {
   var user = await loadUser(req.session.userId);
   var trips = await loadTrips(user);
+
+  var usersNames = [];
+  for (var i = 0; i < trips.length; i++) {
+    usersNames[i] = await loadUserNames(trips[i].users);
+  }
+
   res.type('json');
-  res.send(trips);
+  res.send({trips: trips,  names: usersNames});
 }
 
 async function getTasksResponse(req, res, next) {
@@ -233,6 +152,16 @@ async function doneTaskResponse(req, res, next) {
   getTasksResponse(req, res, next);
 }
 
+async function joinTripResponse(req, res, next) {
+  await joinTrip(req);
+  res.send();
+}
+
+async  function SearchForTripsReponse(req, res, next) {
+  var trips = await getMatchingTrips(req);
+  res.send(trips);
+}
+
 //
 // Database Functions -------------------------------------------------------------------------
 //
@@ -248,18 +177,58 @@ function loadUser(userId) {
 }
 
 function loadTrips(user) {
-  // if user has trip render dash with trips
   return new Promise((resolve, reject) => {
     if (user.trips.length != 0) {
-      Trip.find({'users': user}, (err, result) => {
+      Trip.find({ users: { $in: [user] } }, (err, result) => {
         if (err) reject();
         resolve(result);
       });
     }
-    else {
-      // Don't render trips
-      resolve([]);
+    else resolve([]);
+  })
+}
+
+function joinTrip(req) {
+  return new Promise((resolve, reject) => {
+    User.update(
+      { _id: req.session.userId },
+      { $push: { trips: req.params.tripId } },
+      (err, result) => {
+        if (err) {
+          console.log(err.message);
+          reject();
+        }
+        Trip.update(
+          { _id: req.params.tripId },
+          { $push: { users: req.session.userId } },
+          (err2, result2) => {
+            if (err) {
+              console.log(err.message);
+              reject();
+            }
+            console.log(result);
+            console.log(result2);
+            resolve(result2);
+          }
+        )
+      }
+    )
+  })
+}
+
+function loadUserNames(users) {
+  return new Promise((resolve, reject) => {
+    if (users.length != 0) {
+      User.find(
+        { _id: { $in: users } },
+        { firstName: 1, lastName: 1},
+        (err, result) => {
+          if (err) reject();
+          resolve(result);
+        }
+      );
     }
+    else resolve([]);
   })
 }
 
@@ -277,7 +246,6 @@ function loadTasks(tripId) {
 
 function addTask(req) {
   var b = req.body
-  console.log(b.done);
   return new Promise((resolve, reject) => {
     Trip.update(
       { _id: req.params.tripId },
@@ -326,10 +294,7 @@ function doneTask(req) {
           console.log(err.message);
           reject();
         }
-        console.log(result.tasks.id(req.params.taskId));
-        console.log("Done: " + req.params.done);
         result.tasks.id(req.params.taskId).done = req.params.done == "done";
-        console.log(result.tasks.id(req.params.taskId));
         Trip.update(
           { _id: req.params.tripId },
           { tasks: result.tasks },
@@ -343,6 +308,46 @@ function doneTask(req) {
         )
       }
     )
+  })
+}
+
+function getMatchingTrips(req) {
+  return new Promise((resolve, reject) => {
+    var d = req.session.prefferedDest;
+    Trip.aggregate([
+      {$match: {users: {$nin: [req.session.userId]}}},
+      {
+        $facet: {
+          city: [
+              {$match: {city: d.city_state}},
+              {$addFields: {weight: 0}}
+          ],
+          country: [
+              {$match: {country: d.country, city: {$ne: d.city_state}}},
+              {$addFields: {weight: 1}}
+          ],
+          region: [
+              {$match: {region: d.region, country: {$ne: d.country}}},
+              {$addFields: {weight: 2}}
+          ],
+          global: [
+            {$match: {region: {$ne: d.region}}},
+            {$addFields: {weight: 3}}
+          ]
+        }
+      },
+      {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
+      {$unwind: "$doc"},
+      {$sort: {"doc.weight": 1}},
+      {$limit: 10}
+      // {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
+    ])
+    .exec(function (error, data) {
+      if (error) throw error;
+      console.log(req.session.userId);
+      console.log(data);
+      resolve(data);
+    });
   })
 }
 

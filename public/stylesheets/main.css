@@ -37,8 +37,8 @@ nav {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: min-content min-content auto min-content;
-    background-color: var(--primary-color)
-}
+    background-color: var(--primary-color);
+}  
 
 nav > div {
     margin: 24px;
@@ -137,6 +137,11 @@ label {
     grid-template-rows: repeat(autofill, min-content);
     overflow: auto;
     padding: 12px;
+}
+
+#matchContent {
+    max-height: 500px;
+    overflow: auto;
 }
 
 #infoBar {
@@ -359,10 +364,12 @@ input:required:invalid, input:focus:invalid {
     grid-gap: 24px;
     padding: 24px;
     width: 40%;
+    max-height: 80%;
     margin: auto;
-    margin-top: 120px;
+    margin-top: 60px;
     border-radius: 24px;
     background-color: var(--light-color);
+    overflow: auto;
 }
 
 .invert {
