@@ -295,7 +295,7 @@ function getMatchingTrips(req) {
       {$project: {doc: {$concatArrays: ["$city", "$country", "$region", "$global"]}}},
       {$unwind: "$doc"},
       {$sort: {"doc.weight": 1}},
-      {$limit: 10}
+      {$limit: 10},
       {$project: {_id: "$doc._id", title: "$doc.title", region: "$doc.region", country: "$doc.country", city: "$doc.city"}}
     ])
     .exec(function (error, data) {
